@@ -1,10 +1,76 @@
-import sys
-import time
-import random
 import curses
+import time
+import math
+import random
+import sys
 from curses import textpad
 
+def animation_loading(stdscr):
+    # Текстовые данные
+    loading_text = [
+        "   _____             _         _____                      ",
+        "  / ____|           | |       / ____|                     ",
+        " | (___   __ _ _ __ | |_ ___ | |  __  __ _ _ __ ___   ___ ",
+        "  \\___ \\ / _` | '_ \\| __/ _ \\| | |_ |/ _` | '_ ` _ \\ / _ \\",
+        "  ____) | (_| | | | | ||  __/| |__| | (_| | | | | | |  __/",
+        " |_____/ \\__,_|_| |_|\\__\\___| \\_____|\\__,_|_| |_| |_|\\___|"
+    ]
+    game_title = "Игра про змейку высшего уровня"
+
+    # Инициализация curses
+    stdscr.clear()
+    curses.curs_set(0)
+    stdscr.nodelay(1)
+
+    # --- Анимация ---
+    start_time = time.time()
+    animation_duration = 5  # Продолжительность анимации в секундах
+
+    while True:
+        stdscr.clear()
+        elapsed_time = time.time() - start_time
+        
+        # --- Анимация текста ---
+        progress = elapsed_time / animation_duration
+        if progress <= 1:
+            for i, line in enumerate(loading_text):
+                visible_chars = int(len(line) * progress)
+                stdscr.addstr(stdscr.getmaxyx()[0] // 2 - len(loading_text) // 2 + i,
+                            stdscr.getmaxyx()[1] // 2 - len(line) // 2,
+                            line[:visible_chars])
+            
+            # --- Полоска загрузки ---
+            bar_length = 30  # Длина полоски
+            filled_length = int(bar_length * progress)
+            bar = '█' * filled_length + '-' * (bar_length - filled_length)
+            stdscr.addstr(stdscr.getmaxyx()[0] // 2 + len(loading_text) // 2 + 2,
+                          stdscr.getmaxyx()[1] // 2 - bar_length // 2,
+                          f"[{bar}] {int(progress * 100)}%")  # Процент загрузки
+        else:
+            for i, line in enumerate(loading_text):
+                stdscr.addstr(stdscr.getmaxyx()[0] // 2 - len(loading_text) // 2 + i,
+                            stdscr.getmaxyx()[1] // 2 - len(line) // 2,
+                            line)
+
+        # --- Анимация заголовка игры ---
+        if progress > 0.5:  # Заголовок появляется после половины анимации
+            title_progress = (progress - 0.5) * 2  # Изменяем скорость анимации заголовка
+            visible_title_chars = int(len(game_title) * title_progress)
+            stdscr.addstr(stdscr.getmaxyx()[0] - 2,
+                        stdscr.getmaxyx()[1] // 2 - len(game_title) // 2,
+                        game_title[:visible_title_chars])
+        
+        # --- Запуск игры ---
+        if progress > 1:
+            stdscr.refresh()  # Обновляем экран перед задержкой
+            time.sleep(1)  # Задержка в 1 секунду
+            break
+        
+        time.sleep(0.05)
+        stdscr.refresh()
+        
 def main(stdscr):
+    animation_loading(stdscr)
     curses.curs_set(0)
     stdscr.nodelay(1)
     stdscr.timeout(50)
@@ -125,7 +191,7 @@ def main(stdscr):
         options = [
             "+---------------------------+",
             "|     Выберите сложност:    |",
-            "| 1. Легко                  |",
+ "| 1. Легко                  |",
             "| 2. Средне                 |",
             "| 3. Сложно                 |",
             "+---------------------------+"
@@ -264,7 +330,7 @@ def main(stdscr):
     h = sh - 2
 
     box = [[1, 1], [h, w]]
-    textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1])
+    textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box [1][1])
 
     snake = [[sh//2, sw//2]]
     apples = create_apples(snake, box, apple_count, apple_types)
@@ -351,7 +417,7 @@ def main(stdscr):
                     apples = create_apples(snake, box, apple_count, apple_types)
                     break
             else:
-                snake.pop()
+                snake .pop()
 
             if snake[0] in snake[1:]:
                 break
