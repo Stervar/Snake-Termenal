@@ -74,16 +74,31 @@ def main(stdscr):
             "|      ГЛАВНОЕ МЕНЮ         |",
             "+---------------------------+",
             "| 1. Начать игру            |",
-            "| 2. Информация об игре     |",
-            "| 3. Установить сложность   |",
-            "| 4. Установить размер карты|",
-            "| 5. Установить количество яблок|",
-            "| 6. Установить типы яблок  |",
-            "| 7. Выйти                  |",
+            "| 2. Установить сложность   |",
+            "| 3. Установить размер карты|",
+            "| 4. Kоличество яблок       |",
+            "| 5. Установить типы яблок  |",
+            "| 6. Выйти                  |",
             "+---------------------------+"
         ]
         for i, line in enumerate(menu_items):
             stdscr.addstr(h//2 + i, max(0, w//2 - len(line)//2), line)
+
+        info_box = [
+            "+---------------------------------------+",
+            "|          Информация об игре           |",
+            "+---------------------------------------+",
+            "| Управление: W/↑ - вверх, S/↓ - вниз,  |",
+          "  |A/← - влево, D/→ - вправо              | ",
+            "| Пауза: P                              |",
+            "| Яблоки:                               |",
+            "|  - Обычное яблоко: +1 очко            |",
+            "|  - Большое яблоко: +2 очка            |",
+            "|  - Супер яблоко: +3 очка и +3 сегмента|",
+            "+---------------------------------------+"
+        ]
+        for i, line in enumerate(info_box):
+            stdscr.addstr(h//2 + len(menu_items) + i, max(0, w//2 - len(line)//2), line)
 
         stdscr.refresh()
 
@@ -92,35 +107,16 @@ def main(stdscr):
             if key == ord('1'):
                 return 'play'
             elif key == ord('2'):
-                return 'info'
-            elif key == ord('3'):
                 return 'difficulty'
-            elif key == ord('4'):
+            elif key == ord('3'):
                 return 'map_size'
-            elif key == ord('5'):
+            elif key == ord('4'):
                 return 'apple_count'
-            elif key == ord('6'):
+            elif key == ord('5'):
                 return 'apple_types'
-            elif key == ord('7'):  # Исправлено
+            elif key == ord('6'):  # Исправлено
                 return 'exit'
 
-    def show_info():
-        stdscr.clear()
-        h, w = stdscr.getmaxyx()
-        info = [
-            "Игра Змейка",
-            "Разработчик: Stervar",
-            "Описание : Классическая игра Змейка.",
-            "Управление: W/↑ - вверх, S/↓ - вниз,",
-            "A/← - влево, D/→ - вправо",
-            "Пауза: P",
-            "",
-            "Нажмите любую клавишу, чтобы вернуться в меню."
-        ]
-        for i, line in enumerate(info):
-            stdscr.addstr(h//2 - len(info)//2 + i, max(0, w//2 - len(line)//2), line)
-        stdscr.refresh()
-        stdscr.getch()
 
     def set_difficulty():
         nonlocal difficulty
@@ -221,9 +217,9 @@ def main(stdscr):
         options = [
             "+---------------------------+",
             "|  Выберите типы яблок:     |",
-            "| 1. Обычные                |",
-            "| 2. Обычные и большие      |",
-            "| 3. Обычные, большие и супер|",
+            "| 1.Обычные                 |",
+            "| 2.Обычные и большие       |",
+            "| 3.Обычные, большие и супер|",
             "+---------------------------+"
         ]
         for i, line in enumerate(options):
@@ -240,14 +236,12 @@ def main(stdscr):
                 return
             elif key == ord('3'):
                 apple_types = ['normal', 'big', 'super']
-            return
+                return
 
     while True:
-        action = show_menu ()
+        action = show_menu()
         if action == 'play':
             break
-        elif action == 'info':
-            show_info()
         elif action == 'difficulty':
             set_difficulty()
         elif action == 'map_size':
@@ -279,7 +273,7 @@ def main(stdscr):
     while True:
         current_time = time.time()
         stdscr.clear()
-        textpad.rectangle(stdscr, box[0][0], box[0][1], box[ 1][0], box[1][1])
+        textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1])
         stdscr.addstr(0, 0, f"Счет: {score} | Время: {int(current_time - start_time)} сек.")
         stdscr.addstr(0, w-5, "Выход: Q | Пауза: P")
 
@@ -325,7 +319,7 @@ def main(stdscr):
             last_move_time = current_time
             head = snake[0]
             if direction == curses.KEY_UP:
-                new_head = [head[0] -  1, head[1]]
+                new_head = [head[0] - 1, head[1]]
                 time.sleep(0.01)  # Добавить небольшую задержку для вертикального движения
             elif direction == curses.KEY_DOWN:
                 new_head = [head[0] + 1, head[1]]
@@ -339,7 +333,7 @@ def main(stdscr):
                 new_head[0] = box[1][0] - 1
             elif new_head[0] > box[1][0] - 1:
                 new_head[0] = box[0][0] + 1
-            if new_head [1] < box[0][1] + 1:
+            if new_head[1] < box[0][1] + 1:
                 new_head[1] = box[1][1] - 1
             elif new_head[1] > box[1][1] - 1:
                 new_head[1] = box[0][1] + 1
@@ -358,6 +352,9 @@ def main(stdscr):
                     break
             else:
                 snake.pop()
+
+            if snake[0] in snake[1:]:
+                break
 
         if len(snake) == w * h:
             stdscr.addstr(sh//2, sw//2 - 5, "Вы выиграли!")
