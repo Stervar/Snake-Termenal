@@ -35,9 +35,14 @@ def main(stdscr):
         apples = []
         for _ in range(apple_count):
             while True:
-                apple = [random.randint(box[0][0] + 1, box[1][0] - 1), random.randint(box[0][1] + 1, box[1][1] - 1)]
+                apple = [random.randint(box[0][0] + 1, box[1][0] -  1), random.randint(box[0][1] + 1, box[1][1] - 1)]
                 if apple not in snake and apple not in [a[0] for a in apples]:
-                    apple_type = random.choice(apple_types)
+                    if random.random() < 0.5:  # 50% шанс обычное яблоко
+                        apple_type = 'normal'
+                    elif random.random() < 0.8:  # 30% шанс большое яблоко
+                        apple_type = 'big'
+                    else:  # 20% шанс супер яблоко
+                        apple_type = 'super'
                     apples.append((apple, apple_type))
                     break
         return apples
@@ -235,7 +240,7 @@ def main(stdscr):
                 return
             elif key == ord('3'):
                 apple_types = ['normal', 'big', 'super']
-                return
+            return
 
     while True:
         action = show_menu ()
@@ -274,7 +279,7 @@ def main(stdscr):
     while True:
         current_time = time.time()
         stdscr.clear()
-        textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1])
+        textpad.rectangle(stdscr, box[0][0], box[0][1], box[ 1][0], box[1][1])
         stdscr.addstr(0, 0, f"Счет: {score} | Время: {int(current_time - start_time)} сек.")
         stdscr.addstr(0, w-5, "Выход: Q | Пауза: P")
 
@@ -334,25 +339,22 @@ def main(stdscr):
                 new_head[0] = box[1][0] - 1
             elif new_head[0] > box[1][0] - 1:
                 new_head[0] = box[0][0] + 1
-            if new_head[1] < box[0][1] + 1:
+            if new_head [1] < box[0][1] + 1:
                 new_head[1] = box[1][1] - 1
-            elif new_head[ 1] > box[1][1] - 1:
+            elif new_head[1] > box[1][1] - 1:
                 new_head[1] = box[0][1] + 1
 
             snake.insert(0, new_head)
 
-            if snake[0] in snake[1:]:
-                stdscr.addstr(sh//2, sw//2 - 5, "Вы проиграли!")
-                stdscr.refresh()
-                time.sleep(2)
-                break
             for apple, apple_type in apples:
                 if snake[0] == apple:
                     score += 1
                     apples.remove((apple, apple_type))
-                    apples.append(create_apple(snake, box))
                     if apple_type == 'super':
                         snake.insert(0, [snake[0][0], snake[0][1]])  # Добавить дополнительный сегмент
+                        snake.insert(0, [snake[0][0], snake[0][1]])  # Добавить дополнительный сегмент
+                        snake.insert(0, [snake[0][0], snake[0][1]])  # Добавить дополнительный сегмент
+                    apples = create_apples(snake, box, apple_count, apple_types)
                     break
             else:
                 snake.pop()
