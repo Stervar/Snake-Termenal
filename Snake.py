@@ -260,6 +260,7 @@ def main(stdscr):
 
 curses.wrapper(main)
 
+
 # Импорт библиотек:
 # python
 # Edit
