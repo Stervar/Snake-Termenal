@@ -1,4 +1,3 @@
-
 import sys
 import time
 import random
@@ -8,8 +7,7 @@ from curses import textpad
 def main(stdscr):
     curses.curs_set(0)
     stdscr.nodelay(1)
-    stdscr.timeout(100)
-
+    stdscr.timeout(50)
     # Цвета
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
@@ -83,7 +81,7 @@ def main(stdscr):
         stdscr.addstr(h//2-2, w//2-8, "Выберите сложность:")
         stdscr.addstr(h//2, w//2-8, "1. Легко")
         stdscr.addstr(h//2+1, w//2-8, "2. Средне")
-        stdscr.addstr(h//2+2, w//2-8, "3. Сложно")
+        stdscr.addstr(h//2 +2, w//2-8, "3. Сложно")
         stdscr.refresh()
 
         while True:
@@ -109,65 +107,62 @@ def main(stdscr):
         elif action == 'exit':
             sys.exit()
 
+    apple = create_apple()
+    last_move_time = time.time()
+
     while True:
+        current_time = time.time()
         stdscr.clear()
         textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1])
-        stdscr.addstr(0, 0, f"Счёт: {score} | Время: {int(time.time() - start_time)} сек.")
+        stdscr.addstr(0, 0, f"Счёт: {score} | Время: {int(current_time - start_time)} сек.")
         stdscr.addstr(0, w-5, "Выход: Q")
 
         for y, x in snake:
             stdscr.addch(y, x, '#', curses.color_pair(1))
 
-        if apple:
-            stdscr.addch(apple[0], apple[1], '*', curses.color_pair(2))
-        else:
-            apple = create_apple()
-            stdscr.addch(apple[0], apple[1], '*', curses.color_pair(2))
+        stdscr.addch(apple[0], apple[1], '*', curses.color_pair(2))
 
         stdscr.refresh()
 
+        # Обработка ввода
         key = stdscr.getch()
-        if key == ord('q'):
-            break
-        elif key == curses.KEY_UP and direction != curses.KEY_DOWN:
-            direction = curses.KEY_UP
-        elif key == curses.KEY_DOWN and direction != curses.KEY_UP:
-            direction = curses.KEY_DOWN
-        elif key == curses.KEY_LEFT and direction != curses.KEY_RIGHT:
-            direction = curses.KEY_LEFT
-        elif key == curses.KEY_RIGHT and direction != curses.KEY_LEFT:
-            direction = curses.KEY_RIGHT
-        elif key == ord('w') and direction != curses.KEY_DOWN:
-            direction = curses.KEY_UP
-        elif key == ord('s') and direction != curses.KEY_UP:
-            direction = curses.KEY_DOWN
-        elif key == ord('a') and direction != curses.KEY_RIGHT:
-            direction = curses.KEY_LEFT
-        elif key == ord('d') and direction != curses.KEY_LEFT:
-            direction = curses.KEY_RIGHT
+        if key != -1:
+            if key == ord('q'):
+                break
+            elif key in [curses.KEY_UP, ord('w')] and direction != curses.KEY_DOWN:
+                direction = curses.KEY_UP
+            elif key in [curses.KEY_DOWN, ord('s')] and direction != curses.KEY_UP:
+                direction = curses.KEY_DOWN
+            elif key in [curses.KEY_LEFT, ord('a')] and direction != curses.KEY_RIGHT:
+                direction = curses.KEY_LEFT
+            elif key in [curses.KEY_RIGHT, ord('d')] and direction != curses.KEY_LEFT:
+                direction = curses.KEY_RIGHT
 
-        head = snake[0]
-        if direction == curses.KEY_UP:
-            new_head = [head[0] - 1, head[1]]
-        elif direction == curses.KEY_DOWN:
-            new_head = [head[0] + 1, head[1]]
-        elif direction == curses.KEY_LEFT:
-            new_head = [head[0], head[1] - 1]
-        elif direction == curses.KEY_RIGHT:
-            new_head = [head[0], head[1] + 1]
+        # Автоматическое движение змейки
+        if current_time - last_move_time > 0.1 / difficulty:
+            last_move_time = current_time
+            head = snake[0]
+            if direction == curses.KEY_UP:
+                new_head = [head[0] - 1, head[1]]
+            elif direction == curses.KEY_DOWN:
+                new_head = [head[0] + 1, head[1]]
+            elif direction == curses.KEY_LEFT:
+                new_head = [head[0], head[1] - 1]
+            elif direction == curses.KEY_RIGHT:
+                new_head = [head[0], head[1] + 1]
 
-        snake.insert(0, new_head)
+            snake.insert(0, new_head)
 
-        if snake[0] in snake[1:]:
-            stdscr.addstr(sh//2, sw//2 - 5, "Ты проиграл!")
-            stdscr.refresh()
-            time.sleep(2)
-            break
-        elif snake[0] == apple:
-            score += 1
-            apple = None
-        else:
-            snake.pop()
+            if snake[0][0] in [0, h+1] or snake[0][1] in [0, w+1] or snake[0] in snake[1:]:
+                stdscr.addstr(sh//2, sw//2 - 5, "Ты проиграл!")
+                stdscr.refresh()
+                time.sleep(2)
+                break
+            elif snake[0] == apple:
+                score += 1
+                apple = create_apple()
+            else:
+                snake.pop()
 
         if len(snake) == w * h:
             stdscr.addstr(sh//2, sw//2 - 5, "Вы победили!")
@@ -175,11 +170,7 @@ def main(stdscr):
             time.sleep(2)
             break
 
-        time.sleep(0.1 / difficulty)
-
 curses.wrapper(main)
-
-
 
 # Импорт библиотек:
 # python
