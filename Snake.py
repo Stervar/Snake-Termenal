@@ -22,12 +22,25 @@ def main(stdscr):
     difficulty = 1
     map_size = 'medium'
     paused = False
+    apple_count = 2  # Начальное количество яблок
+    apple_types = ['normal', 'big']  # Начальные типы яблок
 
     def create_apple(snake, box):
         while True:
             apple = [random.randint(box[0][0] + 1, box[1][0] - 1), random.randint(box[0][1] + 1, box[1][1] - 1)]
             if apple not in snake:
                 return apple
+
+    def create_apples(snake, box, apple_count, apple_types):
+        apples = []
+        for _ in range(apple_count):
+            while True:
+                apple = [random.randint(box[0][0] + 1, box[1][0] - 1), random.randint(box[0][1] + 1, box[1][1] - 1)]
+                if apple not in snake and apple not in [a[0] for a in apples]:
+                    apple_type = random.choice(apple_types)
+                    apples.append((apple, apple_type))
+                    break
+        return apples
 
     def show_menu():
         stdscr.clear()
@@ -59,7 +72,9 @@ def main(stdscr):
             "| 2. Информация об игре     |",
             "| 3. Установить сложность   |",
             "| 4. Установить размер карты|",
-            "| 5. Выйти                  |",
+            "| 5. Установить количество яблок|",
+            "| 6. Установить типы яблок  |",
+            "| 7. Выйти                  |",
             "+---------------------------+"
         ]
         for i, line in enumerate(menu_items):
@@ -78,6 +93,10 @@ def main(stdscr):
             elif key == ord('4'):
                 return 'map_size'
             elif key == ord('5'):
+                return 'apple_count'
+            elif key == ord('6'):
+                return 'apple_types'
+            elif key == ord('7'):  # Исправлено
                 return 'exit'
 
     def show_info():
@@ -86,7 +105,7 @@ def main(stdscr):
         info = [
             "Игра Змейка",
             "Разработчик: Stervar",
-            "Описание: Классическая игра Змейка.",
+            "Описание : Классическая игра Змейка.",
             "Управление: W/↑ - вверх, S/↓ - вниз,",
             "A/← - влево, D/→ - вправо",
             "Пауза: P",
@@ -154,8 +173,72 @@ def main(stdscr):
                 map_size = 'large'
                 return
 
+    def set_apple_count():
+        nonlocal apple_count
+        stdscr.clear()
+        h, w = stdscr.getmaxyx()
+        options = [
+            "+---------------------------+",
+            "|  Выберите количество яблок:|",
+            "| 1. 1                       |",
+            "| 2. 2                       |",
+            "| 3. 3                       |",
+            "| 4. 4                       |",
+            "| 5. 5                       |",
+            "+---------------------------+"
+        ]
+        for i, line in enumerate(options):
+            stdscr.addstr(h//2 - len(options)//2 + i, max(0, w//2 - len(line)//2), line)
+        stdscr.refresh()
+
+        while True:
+            key = stdscr.getch()
+            if key == ord('1'):
+                apple_count = 1
+                return
+            elif key == ord('2'):
+                apple_count = 2
+                return
+            elif key == ord('3'):
+                apple_count = 3
+                return
+            elif key == ord('4'):
+                apple_count = 4
+                return
+            elif key == ord('5'):
+                apple_count = 5
+                return
+
+    def set_apple_types():
+        nonlocal apple_types
+        stdscr.clear()
+        h, w = stdscr.getmaxyx()
+        options = [
+            "+---------------------------+",
+            "|  Выберите типы яблок:     |",
+            "| 1. Обычные                |",
+            "| 2. Обычные и большие      |",
+            "| 3. Обычные, большие и супер|",
+            "+---------------------------+"
+        ]
+        for i, line in enumerate(options):
+            stdscr.addstr(h//2 - len(options)//2 + i, max(0, w//2 - len(line)//2), line)
+        stdscr.refresh()
+
+        while True:
+            key = stdscr.getch()
+            if key == ord('1'):
+                apple_types = ['normal']
+                return
+            elif key == ord('2'):
+                apple_types = ['normal', 'big']
+                return
+            elif key == ord('3'):
+                apple_types = ['normal', 'big', 'super']
+                return
+
     while True:
-        action = show_menu()
+        action = show_menu ()
         if action == 'play':
             break
         elif action == 'info':
@@ -164,6 +247,10 @@ def main(stdscr):
             set_difficulty()
         elif action == 'map_size':
             set_map_size()
+        elif action == 'apple_count':
+            set_apple_count()
+        elif action == 'apple_types':
+            set_apple_types()
         elif action == 'exit':
             sys.exit()
 
@@ -181,8 +268,7 @@ def main(stdscr):
     textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1])
 
     snake = [[sh//2, sw//2]]
-    apple = create_apple(snake, box)
-    big_apple = create_apple(snake, box)
+    apples = create_apples(snake, box, apple_count, apple_types)
     last_move_time = time.time()
 
     while True:
@@ -198,8 +284,13 @@ def main(stdscr):
             else:
                 stdscr.addch(y, x, '#', curses.color_pair(1))  # Тело
 
-        stdscr.addch(apple[0], apple[1], '*', curses.color_pair(2))
-        stdscr.addch(big_apple[0], big_apple[1], '*', curses.color_pair(3))
+        for apple, apple_type in apples:
+            if apple_type == 'normal':
+                stdscr.addch(apple[0], apple[1], '*', curses.color_pair(2))
+            elif apple_type == 'big':
+                stdscr.addch(apple[0], apple[1], '*', curses.color_pair(3))
+            elif apple_type == 'super':
+                stdscr.addch(apple[0], apple[1], '*', curses.color_pair(4))
 
         stdscr.refresh()
 
@@ -221,7 +312,7 @@ def main(stdscr):
             elif key in [curses.KEY_DOWN, ord('s')] and direction != curses.KEY_UP:
                 direction = curses.KEY_DOWN
             elif key in [curses.KEY_LEFT, ord('a')] and direction != curses.KEY_RIGHT:
-                direction = curses .KEY_LEFT
+                direction = curses.KEY_LEFT
             elif key in [curses.KEY_RIGHT, ord('d')] and direction != curses.KEY_LEFT:
                 direction = curses.KEY_RIGHT
 
@@ -229,7 +320,7 @@ def main(stdscr):
             last_move_time = current_time
             head = snake[0]
             if direction == curses.KEY_UP:
-                new_head = [head[0] - 1, head[1]]
+                new_head = [head[0] -  1, head[1]]
                 time.sleep(0.01)  # Добавить небольшую задержку для вертикального движения
             elif direction == curses.KEY_DOWN:
                 new_head = [head[0] + 1, head[1]]
@@ -240,12 +331,12 @@ def main(stdscr):
                 new_head = [head[0], head[1] + 1]
 
             if new_head[0] < box[0][0] + 1:
-                new_head[ 0] = box[1][0] - 1
+                new_head[0] = box[1][0] - 1
             elif new_head[0] > box[1][0] - 1:
                 new_head[0] = box[0][0] + 1
             if new_head[1] < box[0][1] + 1:
                 new_head[1] = box[1][1] - 1
-            elif new_head[1] > box[1][1] - 1:
+            elif new_head[ 1] > box[1][1] - 1:
                 new_head[1] = box[0][1] + 1
 
             snake.insert(0, new_head)
@@ -255,13 +346,14 @@ def main(stdscr):
                 stdscr.refresh()
                 time.sleep(2)
                 break
-            elif snake[0] == apple:
-                score += 1
-                apple = create_apple(snake, box)
-            elif snake[0] == big_apple:
-                score += 2
-                big_apple = create_apple(snake, box)
-                snake.insert(0, [snake[0][0], snake[0][1]])  # Добавить дополнительный сегмент
+            for apple, apple_type in apples:
+                if snake[0] == apple:
+                    score += 1
+                    apples.remove((apple, apple_type))
+                    apples.append(create_apple(snake, box))
+                    if apple_type == 'super':
+                        snake.insert(0, [snake[0][0], snake[0][1]])  # Добавить дополнительный сегмент
+                    break
             else:
                 snake.pop()
 
@@ -272,7 +364,6 @@ def main(stdscr):
             break
 
 curses.wrapper(main)
-
 
 # Импорт библиотек:
 # python
