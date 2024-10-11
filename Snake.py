@@ -9,18 +9,19 @@ def main(stdscr):
     stdscr.nodelay(1)
     stdscr.timeout(50)
 
-    # Initialize color pairs
+    # Инициализация цветовых пар
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
-    curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)  # For snake head
+    curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)  # Для головы змейки
 
-    # Initial parameters
+    # Начальные параметры
     direction = curses.KEY_RIGHT
     score = 0
     start_time = time.time()
     difficulty = 1
     map_size = 'medium'
+    paused = False
 
     def create_apple(snake, box):
         while True:
@@ -32,32 +33,34 @@ def main(stdscr):
         stdscr.clear()
         h, w = stdscr.getmaxyx()
 
-        if h < 15 or w < 40:
-            stdscr.addstr(0, 0, "Please resize your terminal window.")
+        if h < 20 or w < 60:
+            stdscr.addstr(0, 0, "Пожалуйста, измените размер окна терминала.")
             stdscr.refresh()
             stdscr.getch()
             sys.exit()
 
-        snake_art = [
-            "  ____  ",
-            " / . .\\ ",
-            " \\  ---<",
-            "  \\  /  ",
-            "   \" \"  "
+        # ASCII Art для "Snake Game"
+        title = [
+            "   _____             _         _____                      ",
+            "  / ____|           | |       / ____|                     ",
+            " | (___   __ _ _ __ | |_ ___ | |  __  __ _ _ __ ___   ___ ",
+            "  \\___ \\ / _` | '_ \\| __/ _ \\| | |_ |/ _` | '_ ` _ \\ / _ \\",
+            "  ____) | (_| | | | | ||  __/| |__| | (_| | | | | | |  __/",
+            " |_____/ \\__,_|_| |_|\\__\\___| \\_____|\\__,_|_| |_| |_|\\___|"
         ]
-        for i, line in enumerate(snake_art):
-            stdscr.addstr(h//2 - len(snake_art) - 3 + i, max(0, w//2 - len(line)//2), line)
+        for i, line in enumerate(title):
+            stdscr.addstr(h//2 - len(title) - 8 + i, max(0, w//2 - len(line)//2), line)
 
         menu_items = [
-            "+----------------+",
-            "|   ЗМЕЙКА       |",
-            "+----------------+",
-            "| 1. Играть      |",
-            "| 2. Информация  |",
-            "| 3. Сложность   |",
-            "| 4. Размер карты|",
-            "| 5. Выход       |",
-            "+----------------+"
+            "+---------------------------+",
+            "|      ГЛАВНОЕ МЕНЮ         |",
+            "+---------------------------+",
+            "| 1. Начать игру            |",
+            "| 2. Информация об игре     |",
+            "| 3. Установить сложность   |",
+            "| 4. Установить размер карты|",
+            "| 5. Выйти                  |",
+            "+---------------------------+"
         ]
         for i, line in enumerate(menu_items):
             stdscr.addstr(h//2 + i, max(0, w//2 - len(line)//2), line)
@@ -81,13 +84,14 @@ def main(stdscr):
         stdscr.clear()
         h, w = stdscr.getmaxyx()
         info = [
-            "Игра 'Змейка'",
+            "Игра Змейка",
             "Разработчик: Stervar",
-            "Описание: Классическая игра 'Змейка'.",
+            "Описание: Классическая игра Змейка.",
             "Управление: W/↑ - вверх, S/↓ - вниз,",
             "A/← - влево, D/→ - вправо",
+            "Пауза: P",
             "",
-            "Нажмите любую клавишу для возврата в меню"
+            "Нажмите любую клавишу, чтобы вернуться в меню."
         ]
         for i, line in enumerate(info):
             stdscr.addstr(h//2 - len(info)//2 + i, max(0, w//2 - len(line)//2), line)
@@ -99,15 +103,15 @@ def main(stdscr):
         stdscr.clear()
         h, w = stdscr.getmaxyx()
         options = [
-            "+-----------------+",
-            "| Выберите сложность: |",
-            "| 1. Легко           |",
-            "| 2. Средне          |",
-            "| 3. Сложно          |",
-            "+-----------------+"
+            "+---------------------------+",
+            "|     Выберите сложност:    |",
+            "| 1. Легко                  |",
+            "| 2. Средне                 |",
+            "| 3. Сложно                 |",
+            "+---------------------------+"
         ]
         for i, line in enumerate(options):
-            stdscr.addstr(h//2 - len(options)//2 + i, max(0, w//2 - len(line)//2), line)
+            stdscr.addstr (h//2 - len(options)//2 + i, max(0, w//2 - len(line)//2), line)
         stdscr.refresh()
 
         while True:
@@ -127,12 +131,12 @@ def main(stdscr):
         stdscr.clear()
         h, w = stdscr.getmaxyx()
         options = [
-            "+-------------------+",
-            "| Выберите размер карты: |",
-            "| 1. Маленькая        |",
-            "| 2. Средняя          |",
-            "| 3. Большая          |",
-            "+-------------------+"
+            "+---------------------------+",
+            "|   Выберите размер карты:  |",
+            "| 1. Маленький              |",
+            "| 2. Средний                |",
+            "| 3. Большой                |",
+            "+---------------------------+"
         ]
         for i, line in enumerate(options):
             stdscr.addstr(h//2 - len(options)//2 + i, max(0, w//2 - len(line)//2), line)
@@ -185,14 +189,14 @@ def main(stdscr):
         current_time = time.time()
         stdscr.clear()
         textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1])
-        stdscr.addstr(0, 0, f"Счёт: {score} | Время: {int(current_time - start_time)} сек.")
-        stdscr.addstr(0, w-5, "Выход: Q")
+        stdscr.addstr(0, 0, f"Счет: {score} | Время: {int(current_time - start_time)} сек.")
+        stdscr.addstr(0, w-5, "Выход: Q | Пауза: P")
 
         for i, (y, x) in enumerate(snake):
             if i == 0:
-                stdscr.addch(y, x, '@', curses.color_pair(4))  # Head
+                stdscr.addch(y, x, '@', curses.color_pair(4))  # Голова
             else:
-                stdscr.addch(y, x, '#', curses.color_pair(1))  # Body
+                stdscr.addch(y, x, '#', curses.color_pair(1))  # Тело
 
         stdscr.addch(apple[0], apple[1], '*', curses.color_pair(2))
         stdscr.addch(big_apple[0], big_apple[1], '*', curses.color_pair(3))
@@ -203,24 +207,33 @@ def main(stdscr):
         if key != -1:
             if key == ord('q'):
                 break
+            elif key == ord('p'):
+                paused = not paused
+                while paused:
+                    stdscr.addstr(sh//2, sw//2 - 5, "Пауза. Нажмите P, чтобы продолжить.")
+                    stdscr.refresh()
+                    key = stdscr.getch()
+                    if key == ord('p'):
+                        paused = False
+                        break
             elif key in [curses.KEY_UP, ord('w')] and direction != curses.KEY_DOWN:
                 direction = curses.KEY_UP
             elif key in [curses.KEY_DOWN, ord('s')] and direction != curses.KEY_UP:
                 direction = curses.KEY_DOWN
             elif key in [curses.KEY_LEFT, ord('a')] and direction != curses.KEY_RIGHT:
-                direction = curses.KEY_LEFT
+                direction = curses .KEY_LEFT
             elif key in [curses.KEY_RIGHT, ord('d')] and direction != curses.KEY_LEFT:
                 direction = curses.KEY_RIGHT
 
-        if current_time - last_move_time > 0.1 / difficulty:
+        if current_time - last_move_time > 0.1 / difficulty and not paused:
             last_move_time = current_time
             head = snake[0]
             if direction == curses.KEY_UP:
                 new_head = [head[0] - 1, head[1]]
-                time.sleep(0.01)  # Add a small delay for vertical movement
+                time.sleep(0.01)  # Добавить небольшую задержку для вертикального движения
             elif direction == curses.KEY_DOWN:
                 new_head = [head[0] + 1, head[1]]
-                time.sleep(0.01)  # Add a small delay for vertical movement
+                time.sleep(0.01)  # Добавить небольшую задержку для вертикального движения
             elif direction == curses.KEY_LEFT:
                 new_head = [head[0], head[1] - 1]
             elif direction == curses.KEY_RIGHT:
@@ -238,7 +251,7 @@ def main(stdscr):
             snake.insert(0, new_head)
 
             if snake[0] in snake[1:]:
-                stdscr.addstr(sh//2, sw//2 - 5, "Ты проиграл!")
+                stdscr.addstr(sh//2, sw//2 - 5, "Вы проиграли!")
                 stdscr.refresh()
                 time.sleep(2)
                 break
@@ -248,12 +261,12 @@ def main(stdscr):
             elif snake[0] == big_apple:
                 score += 2
                 big_apple = create_apple(snake, box)
-                snake.insert(0, [snake[0][0], snake[0][1]])  # Add an extra segment
+                snake.insert(0, [snake[0][0], snake[0][1]])  # Добавить дополнительный сегмент
             else:
                 snake.pop()
 
         if len(snake) == w * h:
-            stdscr.addstr(sh//2, sw//2 - 5, "Вы победили!")
+            stdscr.addstr(sh//2, sw//2 - 5, "Вы выиграли!")
             stdscr.refresh()
             time.sleep(2)
             break
