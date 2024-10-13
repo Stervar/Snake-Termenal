@@ -36,9 +36,10 @@ def animation_loading(stdscr):
             bar_length = 30
             filled_length = int(bar_length * progress)
             bar = '█' * filled_length + '-' * (bar_length - filled_length)
-            stdscr.addstr(stdscr.getmaxyx()[0] // 2 + len(loading_text) // 2 + 2,
-                          stdscr.getmaxyx()[1] // 2 - bar_length // 2,
-                          f"[{bar}] {int(progress * 100)}%")
+            y = stdscr.getmaxyx()[0] // 2 + len(loading_text) // 2 + 2
+            x = stdscr.getmaxyx()[1] // 2 - bar_length // 2
+            if y >= 0 and y < stdscr.getmaxyx()[0] and x >= 0 and x < stdscr.getmaxyx()[1]:
+                stdscr.addstr(y, x, f"[{bar}] {int(progress * 100)}%")
         else:
             for i, line in enumerate(loading_text):
                 stdscr.addstr(stdscr.getmaxyx()[0] // 2 - len(loading_text) // 2 + i,
@@ -48,9 +49,10 @@ def animation_loading(stdscr):
         if progress > 0.5:
             title_progress = (progress - 0.5) * 2
             visible_title_chars = int(len(game_title) * title_progress)
-            stdscr.addstr(stdscr.getmaxyx()[0] - 2,
-                        stdscr.getmaxyx()[1] // 2 - len(game_title) // 2,
-                        game_title[:visible_title_chars])
+            y = stdscr.getmaxyx()[0] - 2
+            x = stdscr.getmaxyx()[1] // 2 - len(game_title) // 2
+            if y >= 0 and y < stdscr.getmaxyx()[0] and x >= 0 and x < stdscr.getmaxyx()[1]:
+                stdscr.addstr(y, x, game_title[:visible_title_chars])
         
         if progress > 1:
             stdscr.refresh()
@@ -59,7 +61,7 @@ def animation_loading(stdscr):
         
         time.sleep(0.05)
         stdscr.refresh()
-
+        
 def show_menu(stdscr):
     stdscr.clear()
     h, w = stdscr.getmaxyx()
@@ -77,11 +79,20 @@ def show_menu(stdscr):
         "  \\___ \\ / _` | '_ \\| __/ _ \\| | |_ |/ _` | '_ ` _ \\ / _ \\",
         "  ____) | (_| | | | | ||  __/| |__| | (_| | | | | | |  __/ ",
         " |_____/ \\__,_|_| |_|\\__\\___| \\_____|\\__,_|_| |_| |_|\\___| "
-    
     ]
     for i, line in enumerate(title):
-        stdscr.addstr(h // 2 - len(title) - 8 + i, max(0, w // 2 - len(line) // 2), line)
+        y = h // 2 - len(title) - 8 + i
+        x = max(0, w // 2 - len(line) // 2)
+        if y >= 0 and y < h and x >= 0 and x < w:
+            stdscr.addstr(y, x, line)
 
+    subtitle = "Игра про змейку которая была улучшина 'Sterva'"
+    y = h // 2 - len(title) - 1
+    x = max(0, w // 2 - len(subtitle) // 2)
+    if y >= 0 and y < h and x >= 0 and x < w:
+        stdscr.addstr(y, x, subtitle)
+
+    # Adjust the y position for menu_items
     menu_items = [
         "+---------------------------+",
         "|      ГЛАВНОЕ МЕНЮ         |",
@@ -95,8 +106,12 @@ def show_menu(stdscr):
         "+---------------------------+"
     ]
     for i, line in enumerate(menu_items):
-        stdscr.addstr(h // 2 + i, max(0, w // 2 - len(line) // 2), line)
+        y = h // 2 + i - 2  # Move menu items up by 2 lines
+        x = max(0, w // 2 - len(line) // 2)
+        if y >= 0 and y < h and x >= 0 and x < w:
+            stdscr.addstr(y, x, line)
 
+    # Adjust the y position for info_box
     info_box = [
         "+---------------------------------------+",
         "|          Информация об игре           |",
@@ -108,15 +123,19 @@ def show_menu(stdscr):
         "|  - Обычное яблоко: +1 очко            |",
         "|  - Большое яблоко: +2 очка            |",
         "|  - Супер яблоко: +3 очка              |",
+        "|    (дает дополнительные очки)         |",
         "+---------------------------------------+"
     ]
     for i, line in enumerate(info_box):
-        stdscr.addstr(h // 2 + len(menu_items) + i, max(0, w // 2 - len(line) // 2), line)
+        y = h // 2 + len(menu_items) - 2 + i  # Move info box up by 2 lines
+        x = max(0, w // 2 - len(line) // 2)
+        if y >= 0 and y < h and x >= 0 and x < w:
+            stdscr.addstr(y, x, line)
 
     stdscr.refresh()
-
+    
     while True:
-        key = stdscr.getch()
+        key = stdscr.getch ()
         if key == ord('1'):
             return 'play'
         elif key == ord('2'):
@@ -129,7 +148,7 @@ def show_menu(stdscr):
             return 'apple_types'
         elif key == ord('6'):
             return 'exit'
-
+        
 def set_difficulty(stdscr):
     stdscr.clear()
     h, w = stdscr.getmaxyx()
@@ -282,9 +301,9 @@ def main(stdscr):
 
         for i, (y, x) in enumerate(snake):
             if i == 0:
-                stdscr.addch(y, x, '@', curses.color_pair(4))  # Голова змейки
+                stdscr.addch(y, x, '۝', curses.color_pair(4))  # Голова змейки
             else:
-                stdscr.addch(y, x, '#', curses.color_pair(1))  # Тело змейки
+                stdscr.addch(y, x, 'o', curses.color_pair(1))  # Тело змейки
 
         for apple, apple_type in apples:
             if apple_type == 'normal':
@@ -377,3 +396,4 @@ def main(stdscr):
 
 if __name__ == '__main__':
     curses.wrapper(main)
+    

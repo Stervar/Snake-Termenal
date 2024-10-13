@@ -1,0 +1,28 @@
+1)Нужно перенести игру в README.(Так чтобы можно было поиграть сразу в гит хабе)
+
+2)Добавить возможность выходить в главное меню и изменить отрисовку выхода и паузы
+
+3)Уменшить скорость верх и вниз змейки 
+
+
+4)Ошибка Количество яблок (там пизедц)
+
+
+
+def set_apple_count(stdscr):
+    stdscr.clear()
+    h, w = stdscr.getmaxyx()
+    stdscr.addstr(h // 2, max(0, w // 2 - 20), "Введите количество яблок (1-10): ")
+    stdscr.refresh()
+
+    curses.echo()
+    while True:
+        count_str = stdscr.getstr().decode('utf-8')
+        if count_str.isdigit() and 1 <= int(count_str) <= 10:
+            return int(count_str)
+    curses.noecho()
+
+
+
+
+5)Изменить цвета в зеленный цвет
