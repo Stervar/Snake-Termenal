@@ -5,7 +5,7 @@ import sys
 from curses import textpad
 
 def animation_loading(stdscr):
-    
+
     loading_text = [
         "   _____             _         _____                      ",
         "  / ____|           | |       / ____|                     ",
@@ -14,6 +14,8 @@ def animation_loading(stdscr):
         "  ____) | (_| | | | | ||  __/| |__| | (_| | | | | | |  __/ ",
         " |_____/ \\__,_|_| |_|\\__\\___| \\_____|\\__,_|_| |_| |_|\\___| "
     ]
+    
+# game_title: Название игры на русском языке.
 
     game_title = "Игра про змейку высшего уровня"
 
@@ -85,9 +87,9 @@ def animation_loading(stdscr):
         time.sleep(0.05)
 
         stdscr.refresh()
-        
 
-def show_menu(stdscr):
+# Основное меню
+def show_menu(stdscr): 
 
     stdscr.clear()
 
@@ -103,6 +105,7 @@ def show_menu(stdscr):
 
         sys.exit()
 
+# Название игры
     title = [
         "   _____             _         _____                      ",
         "  / ____|           | |       / ____|                     ",
@@ -112,6 +115,8 @@ def show_menu(stdscr):
         " |_____/ \\__,_|_| |_|\\__\\___| \\_____|\\__,_|_| |_| |_|\\___| "
     ]
     for i, line in enumerate(title):
+
+# Центрирует все элементы меню с помощью расчетов:
 
         y = h // 2 - len(title) - 8 + i
         x = max(0, w // 2 - len(line) // 2)
@@ -148,7 +153,8 @@ def show_menu(stdscr):
         if y >= 0 and y < h and x >= 0 and x < w:
             stdscr.addstr(y, x, line)
 
-    # Настройте положение y для info_box
+    # Показывает информационный блок с правилами игры.
+
     info_box = [
         "+---------------------------------------+",
         "|          Информация об игре           |",
