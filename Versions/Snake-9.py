@@ -1,10 +1,31 @@
+# curses: для создания текстового интерфейса в терминале
+
 import curses
+
+# time: для работы со временем
+
 import time
+
+# random: для генерации случайных чисел
+
 import random
+
+# sys: для системных функций
+
 import sys
+
+# textpad: модуль из curses для рисования прямоугольников
+
 from curses import textpad
 
+
+
+
+
+
 def animation_loading(stdscr):
+
+# loading_text: ASCII-арт логотип игры, представленный списком строк.
 
     loading_text = [
         "   _____             _         _____                      ",
@@ -14,18 +35,28 @@ def animation_loading(stdscr):
         "  ____) | (_| | | | | ||  __/| |__| | (_| | | | | | |  __/ ",
         " |_____/ \\__,_|_| |_|\\__\\___| \\_____|\\__,_|_| |_| |_|\\___| "
     ]
-    
+
 # game_title: Название игры на русском языке.
 
     game_title = "Игра про змейку высшего уровня"
 
+# stdscr.clear(): Очищает экран.
+
     stdscr.clear()
+
+# curses.curs_set(0): Скрывает курсор.
 
     curses.curs_set(0)
 
+# stdscr.nodelay(1): Устанавливает неблокирующий режим ввода.
+
     stdscr.nodelay(1)
 
+# start_time = time.time(): Запоминает время начала анимации.
+
     start_time = time.time()
+
+# animation_duration = 5: Устанавливает длительность анимации в секундах.
 
     animation_duration = 5
 
@@ -35,6 +66,8 @@ def animation_loading(stdscr):
 
         elapsed_time = time.time() - start_time
 
+# Вычисляет прогресс анимации: progress = elapsed_time / animation_duration.
+
         progress = elapsed_time / animation_duration
         
         if progress <= 1:
@@ -43,12 +76,16 @@ def animation_loading(stdscr):
 
                 visible_chars = int(len(line) * progress)
 
+# Использует stdscr.addstr() для вывода текста на экран.
+
                 stdscr.addstr(stdscr.getmaxyx()[0] // 2 - len(loading_text) // 2 + i,
                             stdscr.getmaxyx()[1] // 2 - len(line) // 2,
                             line[:visible_chars])
             
             bar_length = 30
             filled_length = int(bar_length * progress)
+
+# Рисует прогресс-бар, заполняя его символами '█'.
 
             bar = '█' * filled_length + '-' * (bar_length - filled_length)
             y = stdscr.getmaxyx()[0] // 2 + len(loading_text) // 2 + 2
@@ -63,6 +100,8 @@ def animation_loading(stdscr):
                 stdscr.addstr(stdscr.getmaxyx()[0] // 2 - len(loading_text) // 2 + i,
                             stdscr.getmaxyx()[1] // 2 - len(line) // 2,
                             line)
+                
+# После 50% прогресса начинает отображать название игры.
 
         if progress > 0.5:
 
@@ -73,8 +112,12 @@ def animation_loading(stdscr):
             x = stdscr.getmaxyx()[1] // 2 - len(game_title) // 2
 
             if y >= 0 and y < stdscr.getmaxyx()[0] and x >= 0 and x < stdscr.getmaxyx()[1]:
+
+# Использует stdscr.addstr() для вывода текста на экран.
+               
                 stdscr.addstr(y, x, game_title[:visible_title_chars])
         
+# Проверяет границы экрана перед выводом, чтобы избежать ошибок.
 
         if progress > 1:
 
@@ -83,7 +126,9 @@ def animation_loading(stdscr):
             time.sleep(1)
 
             break
-        
+
+# time.sleep(0.05): Контролирует скорость анимации.   
+     
         time.sleep(0.05)
 
         stdscr.refresh()
@@ -94,6 +139,8 @@ def show_menu(stdscr):
     stdscr.clear()
 
     h, w = stdscr.getmaxyx()
+
+# Проверяет размер окна терминала: if h < 20 or w < 60.
 
     if h < 20 or w < 60:
 
@@ -132,7 +179,8 @@ def show_menu(stdscr):
     if y >= 0 and y < h and x >= 0 and x < w:
         stdscr.addstr(y, x, subtitle)
 
-    # Настройте положение по оси y для элементов меню
+    # Отображает главное меню с 6 пунктами.
+
     menu_items = [
         "+---------------------------+",
         "|      ГЛАВНОЕ МЕНЮ         |",
@@ -203,6 +251,7 @@ def show_menu(stdscr):
         elif key == ord('6'):
             return 'exit'
         
+# Отображает меню выбора сложности.
 
 def set_difficulty(stdscr):
 
@@ -226,6 +275,9 @@ def set_difficulty(stdscr):
 
     while True:
 
+# Использует stdscr.getch() для получения выбора пользователя.
+# Возвращает числовое значение сложности (1, 1.5 или 2).
+
         key = stdscr.getch()
 
         if key == ord('1'):
@@ -237,6 +289,7 @@ def set_difficulty(stdscr):
         elif key == ord('3'):
             return 2
 
+# Отображает меню выбора размера карты.
 
 def set_map_size(stdscr):
 
@@ -257,6 +310,7 @@ def set_map_size(stdscr):
 
     stdscr.refresh()
 
+# Возвращает строку с выбранным размером ('small', 'medium', 'large').
 
     while True:
 
@@ -271,6 +325,8 @@ def set_map_size(stdscr):
         elif key == ord('3'):
             return 'large'
 
+# Запрашивает у пользователя количество яблок.
+
 def set_apple_count(stdscr):
 
     stdscr.clear()
@@ -281,6 +337,8 @@ def set_apple_count(stdscr):
 
     stdscr.refresh()
 
+# Использует curses.echo() для отображения ввода пользователя.
+
     curses.echo()
 
 
@@ -288,10 +346,15 @@ def set_apple_count(stdscr):
 
         count_str = stdscr.getstr().decode('utf-8')
 
+# Проверяет ввод на корректность (число от 1 до 10).
+
         if count_str.isdigit() and 1 <= int(count_str) <= 10:
+
+# Возвращает целое число.
 
             return int(count_str)
     
+# Отображает меню выбора типов яблок.
 
 def set_apple_types(stdscr):
     stdscr.clear()
@@ -305,6 +368,9 @@ def set_apple_types(stdscr):
         "| 3. Все типы (супер)       |",
         "+---------------------------+"
     ]
+
+# Возвращает список выбранных типов яблок.
+   
     for i, line in enumerate(options):
 
         stdscr.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
@@ -325,16 +391,22 @@ def set_apple_types(stdscr):
         elif key == ord('3'):
             return ['normal', 'big', 'super']
 
+# Генерирует список яблок заданного количества.
+
 def create_apples(snake, box, apple_count, apple_types):
 
     apples = []
 
     for _ in range(apple_count):
 
+# Использует вложенный цикл while для генерации уникальных позиций яблок.
 
         while True:
 
             apple = [random.randint(box[0][0] + 1, box[1][0] - 1), random.randint(box[0][1] + 1, box[1][1] - 1)]
+
+# Проверяет, чтобы яблоки не появлялись на змейке или друг на друге. - Случайно выбирает тип каждого яблока из доступных типов.
+
 
             if apple not in snake and apple not in [a[0] for a in apples]:
 
@@ -350,6 +422,8 @@ def create_apples(snake, box, apple_count, apple_types):
 def main(stdscr):
 
     animation_loading(stdscr)
+    
+# Инициализирует цветовые пары для curses.
 
     curses.curs_set(0)
 
@@ -364,6 +438,8 @@ def main(stdscr):
     curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
 
     curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+
+# Инициализирует параметры игры (сложность, размер карты и т.д.).
 
     difficulty = 1
 
@@ -394,6 +470,7 @@ def main(stdscr):
         elif menu_choice == 'exit':
             return
 
+# Создает игровое поле, змейку и яблоки.
 
     if map_size == 'small':
         box = [[2, 2], [20, 40]]
@@ -418,6 +495,8 @@ def main(stdscr):
 
     paused = False
 
+# Содержит основной игровой цикл:
+
     while True:
 
         current_time = time.time()
@@ -429,6 +508,8 @@ def main(stdscr):
         stdscr.addstr(0, 0, f"Счет: {score} | Время: {int(current_time - start_time)} сек.")
 
         stdscr.addstr(0, curses.COLS - 5, "Выход: Q | Пауза: P")
+        
+# Движение змейки.
 
         for i, (y, x) in enumerate(snake):
             if i == 0:
