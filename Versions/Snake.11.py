@@ -567,6 +567,20 @@ def main(color):
             elif key in [curses.KEY_RIGHT, ord('d')] and direction != curses.KEY_LEFT:
                 direction = curses.KEY_RIGHT
 
+            elif key in [curses.KEY_UP, ord('ц')] and direction != curses.KEY_DOWN:
+                direction = curses.KEY_UP
+
+            elif key in [curses.KEY_DOWN, ord('ы')] and direction != curses.KEY_UP:
+                direction = curses.KEY_DOWN
+
+            elif key in [curses.KEY_LEFT, ord('ф')] and direction != curses.KEY_RIGHT:
+                direction = curses.KEY_LEFT
+
+            elif key in [curses.KEY_RIGHT, ord('в')] and direction != curses.KEY_LEFT:
+                direction = curses.KEY_RIGHT
+
+
+
         if current_time - last_move_time > 0.1 / difficulty and not paused:
 
             last_move_time = current_time
