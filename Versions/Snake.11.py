@@ -662,7 +662,3 @@ def main(color):
 if __name__ == '__main__':
     curses.wrapper(main)
     
-
-
-
-
