@@ -23,7 +23,7 @@ from curses import textpad
 
 
 
-def animation_loading(stdscr):
+def animation_loading(animation):
 
 # loading_text: ASCII-арт логотип игры, представленный списком строк.
 
@@ -42,7 +42,7 @@ def animation_loading(stdscr):
 
 # stdscr.clear(): Очищает экран.
 
-    stdscr.clear()
+    animation.clear()
 
 # curses.curs_set(0): Скрывает курсор.
 
@@ -50,7 +50,7 @@ def animation_loading(stdscr):
 
 # stdscr.nodelay(1): Устанавливает неблокирующий режим ввода.
 
-    stdscr.nodelay(1)
+    animation.nodelay(1)
 
 # start_time = time.time(): Запоминает время начала анимации.
 
@@ -62,7 +62,7 @@ def animation_loading(stdscr):
 
     while True:
 
-        stdscr.clear()
+        animation.clear()
 
         elapsed_time = time.time() - start_time
 
@@ -78,8 +78,8 @@ def animation_loading(stdscr):
 
 # Использует stdscr.addstr() для вывода текста на экран.
 
-                stdscr.addstr(stdscr.getmaxyx()[0] // 2 - len(loading_text) // 2 + i,
-                            stdscr.getmaxyx()[1] // 2 - len(line) // 2,
+                animation.addstr(animation.getmaxyx()[0] // 2 - len(loading_text) // 2 + i,
+                            animation.getmaxyx()[1] // 2 - len(line) // 2,
                             line[:visible_chars])
             
             bar_length = 30
@@ -88,17 +88,17 @@ def animation_loading(stdscr):
 # Рисует прогресс-бар, заполняя его символами '█'.
 
             bar = '█' * filled_length + '-' * (bar_length - filled_length)
-            y = stdscr.getmaxyx()[0] // 2 + len(loading_text) // 2 + 2
-            x = stdscr.getmaxyx()[1] // 2 - bar_length // 2
+            y = animation.getmaxyx()[0] // 2 + len(loading_text) // 2 + 2
+            x = animation.getmaxyx()[1] // 2 - bar_length // 2
 
-            if y >= 0 and y < stdscr.getmaxyx()[0] and x >= 0 and x < stdscr.getmaxyx()[1]:
-                stdscr.addstr(y, x, f"[{bar}] {int(progress * 100)}%")
+            if y >= 0 and y < animation.getmaxyx()[0] and x >= 0 and x < animation.getmaxyx()[1]:
+                animation.addstr(y, x, f"[{bar}] {int(progress * 100)}%")
 
         else:
             for i, line in enumerate(loading_text):
 
-                stdscr.addstr(stdscr.getmaxyx()[0] // 2 - len(loading_text) // 2 + i,
-                            stdscr.getmaxyx()[1] // 2 - len(line) // 2,
+                animation.addstr(animation.getmaxyx()[0] // 2 - len(loading_text) // 2 + i,
+                            animation.getmaxyx()[1] // 2 - len(line) // 2,
                             line)
                 
 # После 50% прогресса начинает отображать название игры.
@@ -108,20 +108,20 @@ def animation_loading(stdscr):
             title_progress = (progress - 0.5) * 2
             visible_title_chars = int(len(game_title) * title_progress)
 
-            y = stdscr.getmaxyx()[0] - 2
-            x = stdscr.getmaxyx()[1] // 2 - len(game_title) // 2
+            y = animation.getmaxyx()[0] - 2
+            x = animation.getmaxyx()[1] // 2 - len(game_title) // 2
 
-            if y >= 0 and y < stdscr.getmaxyx()[0] and x >= 0 and x < stdscr.getmaxyx()[1]:
+            if y >= 0 and y < animation.getmaxyx()[0] and x >= 0 and x < animation.getmaxyx()[1]:
 
 # Использует stdscr.addstr() для вывода текста на экран.
                
-                stdscr.addstr(y, x, game_title[:visible_title_chars])
+                animation.addstr(y, x, game_title[:visible_title_chars])
         
 # Проверяет границы экрана перед выводом, чтобы избежать ошибок.
 
         if progress > 1:
 
-            stdscr.refresh()
+            animation.refresh()
 
             time.sleep(1)
 
@@ -131,7 +131,7 @@ def animation_loading(stdscr):
      
         time.sleep(0.05)
 
-        stdscr.refresh()
+        animation.refresh()
 
 # Основное меню
 def show_menu(stdscr): 
@@ -253,11 +253,11 @@ def show_menu(stdscr):
         
 # Отображает меню выбора сложности.
 
-def set_difficulty(stdscr):
+def set_difficulty(complexity):
 
-    stdscr.clear()
+    complexity.clear()
 
-    h, w = stdscr.getmaxyx()
+    h, w = complexity.getmaxyx()
     options = [
         "+---------------------------+",
         "|     Выберите сложность:   |",
@@ -268,9 +268,9 @@ def set_difficulty(stdscr):
     ]
     for i, line in enumerate(options):
 
-        stdscr.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
+        complexity.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
 
-    stdscr.refresh()
+    complexity.refresh()
 
 
     while True:
@@ -278,7 +278,7 @@ def set_difficulty(stdscr):
 # Использует stdscr.getch() для получения выбора пользователя.
 # Возвращает числовое значение сложности (1, 1.5 или 2).
 
-        key = stdscr.getch()
+        key = complexity.getch()
 
         if key == ord('1'):
             return 1
@@ -291,11 +291,11 @@ def set_difficulty(stdscr):
 
 # Отображает меню выбора размера карты.
 
-def set_map_size(stdscr):
+def set_map_size(map):
 
-    stdscr.clear()
+    map.clear()
 
-    h, w = stdscr.getmaxyx()
+    h, w = map.getmaxyx()
     options = [
         "+---------------------------+",
         "|   Выберите размер карты:  |",
@@ -306,15 +306,15 @@ def set_map_size(stdscr):
     ]
     for i, line in enumerate(options):
 
-        stdscr.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
+        map.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
 
-    stdscr.refresh()
+    map.refresh()
 
 # Возвращает строку с выбранным размером ('small', 'medium', 'large').
 
     while True:
 
-        key = stdscr.getch()
+        key = map.getch()
 
         if key == ord('1'):
             return 'small'
@@ -327,15 +327,15 @@ def set_map_size(stdscr):
 
 # Запрашивает у пользователя количество яблок.
 
-def set_apple_count(stdscr):
+def set_apple_count(apple_quantity):
 
-    stdscr.clear()
+    apple_quantity.clear()
 
-    h, w = stdscr.getmaxyx()
+    h, w = apple_quantity.getmaxyx()
 
-    stdscr.addstr(h // 2, max(0, w // 2 - 20), "Введите количество яблок (1-10): ")
+    apple_quantity.addstr(h // 2, max(0, w // 2 - 20), "Введите количество яблок (1-10): ")
 
-    stdscr.refresh()
+    apple_quantity.refresh()
 
 # Использует curses.echo() для отображения ввода пользователя.
 
@@ -344,7 +344,7 @@ def set_apple_count(stdscr):
 
     while True:
 
-        count_str = stdscr.getstr().decode('utf-8')
+        count_str = apple_quantity.getstr().decode('utf-8')
 
 # Проверяет ввод на корректность (число от 1 до 10).
 
@@ -356,10 +356,10 @@ def set_apple_count(stdscr):
     
 # Отображает меню выбора типов яблок.
 
-def set_apple_types(stdscr):
-    stdscr.clear()
+def set_apple_types(apple_types):
+    apple_types.clear()
 
-    h, w = stdscr.getmaxyx()
+    h, w = apple_types.getmaxyx()
     options = [
         "+---------------------------+",
         "|   Выберите типы яблок:    |",
@@ -373,14 +373,14 @@ def set_apple_types(stdscr):
    
     for i, line in enumerate(options):
 
-        stdscr.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
+        apple_types.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
 
-    stdscr.refresh()
+    apple_types.refresh()
 
 
     while True:
 
-        key = stdscr.getch()
+        key = apple_types.getch()
 
         if key == ord('1'):
             return [' normal']
@@ -419,17 +419,17 @@ def create_apples(snake, box, apple_count, apple_types):
     return apples
 
 
-def main(stdscr):
+def main(color):
 
-    animation_loading(stdscr)
+    animation_loading(color)
     
 # Инициализирует цветовые пары для curses.
 
     curses.curs_set(0)
 
-    stdscr.nodelay(1)
+    color.nodelay(1)
 
-    stdscr.timeout(50)
+    color.timeout(50)
 
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
 
@@ -451,21 +451,21 @@ def main(stdscr):
 
     while True:
 
-        menu_choice = show_menu(stdscr)
+        menu_choice = show_menu(color)
         if menu_choice == 'play':
             break
 
         elif menu_choice == 'difficulty':
-            difficulty = set_difficulty(stdscr)
+            difficulty = set_difficulty(color)
 
         elif menu_choice == 'map_size':
-            map_size = set_map_size(stdscr)
+            map_size = set_map_size(color)
 
         elif menu_choice == 'apple_count':
-            apple_count = set_apple_count(stdscr)
+            apple_count = set_apple_count(color)
 
         elif menu_choice == 'apple_types':
-            apple_types = set_apple_types(stdscr)
+            apple_types = set_apple_types(color)
 
         elif menu_choice == 'exit':
             return
@@ -501,40 +501,40 @@ def main(stdscr):
 
         current_time = time.time()
 
-        stdscr.clear()
+        color.clear()
 
-        textpad.rectangle(stdscr, box[0][0], box[0][1], box[1][0], box[1][1])
+        textpad.rectangle(color, box[0][0], box[0][1], box[1][0], box[1][1])
 
-        stdscr.addstr(0, 0, f"Счет: {score} | Время: {int(current_time - start_time)} сек.")
+        color.addstr(0, 0, f"Счет: {score} | Время: {int(current_time - start_time)} сек.")
 
-        stdscr.addstr(0, curses.COLS - 5, "Выход: Q | Пауза: P")
+        color.addstr(0, curses.COLS - 5, "Выход: Q | Пауза: P")
         
 # Движение змейки.
 
         for i, (y, x) in enumerate(snake):
             if i == 0:
-                stdscr.addch(y, x, '۝', curses.color_pair(4))  # Голова змейки
+                color.addch(y, x, '۝', curses.color_pair(4))  # Голова змейки
             else:
-                stdscr.addch(y, x, 'o', curses.color_pair(1))  # Тело змейки
+                color.addch(y, x, 'o', curses.color_pair(1))  # Тело змейки
 
 
         for apple, apple_type in apples:
 
             if apple_type == 'normal':
 
-                stdscr.addch(apple[0], apple[1], '*', curses.color_pair(2))
+                color.addch(apple[0], apple[1], '*', curses.color_pair(2))
 
             elif apple_type == 'big':
-                stdscr.addch(apple[0], apple[1], '*', curses.color_pair(3))
+                color.addch(apple[0], apple[1], '*', curses.color_pair(3))
 
             elif apple_type == 'super':
-                stdscr.addch(apple[0], apple[1], '*', curses.color_pair(4))
+                color.addch(apple[0], apple[1], '*', curses.color_pair(4))
 
 
-        stdscr.refresh()
+        color.refresh()
 
 
-        key = stdscr.getch()
+        key = color.getch()
         if key != -1:
 
             if key == ord('q'):
@@ -544,11 +544,11 @@ def main(stdscr):
                 paused = not paused
 
                 while paused:
-                    stdscr.addstr(curses.LINES // 2, curses.COLS // 2 - 5, "Пауза. Нажмите P, чтобы продолжить.")
+                    color.addstr(curses.LINES // 2, curses.COLS // 2 - 5, "Пауза. Нажмите P, чтобы продолжить.")
 
-                    stdscr.refresh()
+                    color.refresh()
 
-                    key = stdscr.getch()
+                    key = color.getch()
 
                     if key == ord('p'):
                         paused = False
@@ -634,11 +634,11 @@ def main(stdscr):
             else:
                 if snake[0] in snake[1:]:
 
-                    stdscr.addstr(curses.LINES // 2, curses.COLS // 2 - 10, "Игра окончена! Нажмите Q, чтобы выйти.")
-                    stdscr.refresh()
+                    color.addstr(curses.LINES // 2, curses.COLS // 2 - 10, "Игра окончена! Нажмите Q, чтобы выйти.")
+                    color.refresh()
 
                     while True:
-                        key = stdscr.getch()
+                        key = color.getch()
                         if key == ord('q'):
                             return
                 snake.pop()
