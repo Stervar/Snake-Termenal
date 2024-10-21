@@ -506,13 +506,8 @@ def main(color):
         textpad.rectangle(color, box[0][0], box[0][1], box[1][0], box[1][1])
 
         color.addstr(0, 0, f"Счет: {score} | Время: {int(current_time - start_time)} сек.")
-        score +1
-        if apple_type == 'normal':
-            score +2
-            if apple_type == 'big':
-                score +3
-                if apple_type == 'super':
-                    color.addstr(0, curses.COLS - 5, "Выход: Q | Пауза: P")
+
+        color.addstr(0, curses.COLS - 5, "Выход: Q | Пауза: P")
         
 # Движение змейки.
 
@@ -610,7 +605,12 @@ def main(color):
             # Проверка столкновения с яблоком
             for apple, apple_type in apples:
                 if snake[0] == apple:
-                    score += 1
+                    if apple_type == 'super':
+                        score += 3
+                    elif apple_type == 'big':
+                        score += 2
+                    elif apple_type == 'normal':
+                        score += 1  
                     apples.remove((apple, apple_type))
 
 
@@ -629,6 +629,7 @@ def main(color):
                         for _ in range(0): #Добовляет один сегмент к змейки
                             new_head = snake[0]
                             snake.insert(0, new_head)
+                            
 
 
                             # Проверка выхода за границы
