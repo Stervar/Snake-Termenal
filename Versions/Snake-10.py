@@ -19,7 +19,8 @@ import sys
 from curses import textpad
 
 
-# Добавьте это в начало файла, после импортов (примерно строка 20)
+
+
 
 
 def animation_loading(animation):
@@ -610,7 +611,17 @@ def main(color):
 
                     # Проверка типа яблока
                     if apple_type == 'super':
-                        for _ in range(3):  # Добавляем три сегмента к змейке
+                        for _ in range(2):  # Добавляем три сегмента к змейке
+                            new_head = snake[0]
+                            snake.insert(0, new_head)
+                            
+                    if apple_type == 'big':
+                        for _ in range(1):  # Добавляем два сегмента к змейке
+                            new_head = snake[0]
+                            snake.insert(0, new_head)
+                            
+                    if apple_type == 'normal':
+                        for _ in range(0): #Добовляет один сегмент к змейки
                             new_head = snake[0]
                             snake.insert(0, new_head)
 
