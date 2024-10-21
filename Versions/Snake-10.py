@@ -19,8 +19,7 @@ import sys
 from curses import textpad
 
 
-
-
+# Добавьте это в начало файла, после импортов (примерно строка 20)
 
 
 def animation_loading(animation):
