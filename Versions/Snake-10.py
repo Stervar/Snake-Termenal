@@ -506,8 +506,13 @@ def main(color):
         textpad.rectangle(color, box[0][0], box[0][1], box[1][0], box[1][1])
 
         color.addstr(0, 0, f"Счет: {score} | Время: {int(current_time - start_time)} сек.")
-
-        color.addstr(0, curses.COLS - 5, "Выход: Q | Пауза: P")
+        score +1
+        if apple_type == 'normal':
+            score +2
+            if apple_type == 'big':
+                score +3
+                if apple_type == 'super':
+                    color.addstr(0, curses.COLS - 5, "Выход: Q | Пауза: P")
         
 # Движение змейки.
 
