@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\279014673\Snake-Termenal-1\env
+set VIRTUAL_ENV=C:\Users\HyperPC\Documents\GitHub\Snake\env
 
 if not defined PROMPT set PROMPT=$P$G
 
