@@ -182,16 +182,16 @@ def show_menu(stdscr):
     # Отображает главное меню с 6 пунктами.
 
     menu_items = [
-        "+---------------------------+",
-        "|      ГЛАВНОЕ МЕНЮ         |",
-        "+---------------------------+",
-        "| 1. Начать игру            |",
-        "| 2. Установить сложность   |",
-        "| 3. Установить размер карты|",
-        "| 4. Количество яблок       |",
-        "| 5. Установить типы яблок  |",
-        "| 6. Выйти                  |",
-        "+---------------------------+"
+        "╔═══════════════════════════════╗",
+        "║       ● ГЛАВНОЕ МЕНЮ  ●       ║",
+        "╠═══════════════════════════════╣",
+        "║ • 1. Начать игру              ║",
+        "║ • 2. Установить сложность     ║",
+        "║ • 3. Установить размер карты  ║",
+        "║ • 4. Количество яблок         ║",
+        "║ • 5. Установить типы яблок    ║",
+        "║ • 6. Выйти                    ║",
+        "╚═══════════════════════════════╝"
     ]
     for i, line in enumerate(menu_items):
 
@@ -204,18 +204,20 @@ def show_menu(stdscr):
     # Показывает информационный блок с правилами игры.
 
     info_box = [
-        "+---------------------------------------+",
-        "|          Информация об игре           |",
-        "+---------------------------------------+",
-        "| Управление: W/↑ - вверх, S/↓ - вниз,  |",
-        "| A/← - влево, D/→ - вправо             |",
-        "| Пауза: P                              |",
-        "| Яблоки:                               |",
-        "|  - Обычное яблоко: +1 очко            |",
-        "|  - Большое яблоко: +2 очка            |",
-        "|  - Супер яблоко: +3 очка              |",
-        "|    (дает дополнительные очки)         |",
-        "+---------------------------------------+"
+        "╔═══════════════════════════════════════╗",
+        "║         Информация об игре            ║",
+        "╠═══════════════════════════════════════╣",
+        "║ Управление:                           ║",
+        "║  • W/↑ - вверх,    • S/↓ - вниз       ║",
+        "║  • A/← - влево,    • D/→ - вправо     ║",
+        "║  • P - Пауза                          ║",
+        "╠═══════════════════════════════════════╣",
+        "║ Яблоки:                               ║",
+        "║  • Обычное яблоко: +1 очко            ║",
+        "║  • Большое яблоко: +2 очка            ║",
+        "║  • Супер яблоко: +3 очка              ║",
+        "║    (дает дополнительные очки)         ║",
+        "╚═══════════════════════════════════════╝"
     ]
     for i, line in enumerate(info_box):
 
@@ -259,13 +261,15 @@ def set_difficulty(complexity):
 
     h, w = complexity.getmaxyx()
     options = [
-        "+---------------------------+",
-        "|     Выберите сложность:   |",
-        "| 1. Легко                  |",
-        "| 2. Средне                 |",
-        "| 3. Сложно                 |",
-        "+---------------------------+"
-    ]
+    "╔═══════════════════════════════╗",
+    "║     Выберите сложность:       ║",
+    "╠═══════════════════════════════╣",
+    "║ • 1. Легко                    ║",
+    "║ • 2. Средне                   ║",
+    "║ • 3. Сложно                   ║",
+    "╚═══════════════════════════════╝"
+]
+
     for i, line in enumerate(options):
 
         complexity.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
@@ -297,13 +301,14 @@ def set_map_size(map):
 
     h, w = map.getmaxyx()
     options = [
-        "+---------------------------+",
-        "|   Выберите размер карты:  |",
-        "| 1. Маленький              |",
-        "| 2. Средний                |",
-        "| 3. Большой                |",
-        "+---------------------------+"
-    ]
+    "╔═══════════════════════════════╗",
+    "║   Выберите размер карты:      ║",
+    "╠═══════════════════════════════╣",
+    "║ • 1. Маленький                ║",
+    "║ • 2. Средний                  ║",
+    "║ • 3. Большой                  ║",
+    "╚═══════════════════════════════╝"
+]
     for i, line in enumerate(options):
 
         map.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
@@ -361,13 +366,14 @@ def set_apple_types(apple_types):
 
     h, w = apple_types.getmaxyx()
     options = [
-        "+---------------------------+",
-        "|   Выберите типы яблок:    |",
-        "| 1. Только обычные         |",
-        "| 2. Обычные и большие      |",
-        "| 3. Все типы (супер)       |",
-        "+---------------------------+"
-    ]
+    "╔═══════════════════════════════╗",
+    "║    Выберите типы яблок:       ║",
+    "╠═══════════════════════════════╣",
+    "║ • 1. Только обычные           ║",
+    "║ • 2. Обычные и большие        ║",
+    "║ • 3. Все типы (включая супер) ║",
+    "╚═══════════════════════════════╝"
+]
 
 # Возвращает список выбранных типов яблок.
    
@@ -450,26 +456,24 @@ def main(color):
     apple_types = ['normal', 'big']
 
     while True:
-
         menu_choice = show_menu(color)
         if menu_choice == 'play':
-            break
-
+            game_result = play_game(color, difficulty, map_size, apple_count, apple_types)
+            if game_result == 'exit':
+                return
         elif menu_choice == 'difficulty':
             difficulty = set_difficulty(color)
-
         elif menu_choice == 'map_size':
             map_size = set_map_size(color)
-
         elif menu_choice == 'apple_count':
             apple_count = set_apple_count(color)
-
         elif menu_choice == 'apple_types':
             apple_types = set_apple_types(color)
-
         elif menu_choice == 'exit':
             return
-
+        
+def play_game(color, difficulty, map_size, apple_count, apple_types):
+    
 # Создает игровое поле, змейку и яблоки.
 
     if map_size == 'small':
@@ -498,17 +502,34 @@ def main(color):
 # Содержит основной игровой цикл:
 
     while True:
-
         current_time = time.time()
 
         color.clear()
-
         textpad.rectangle(color, box[0][0], box[0][1], box[1][0], box[1][1])
+            # Создаем информационную строку
+        score_info = f"Счет: {score}"
+        time_info = f"Время: {int(current_time - start_time)} сек"
+        control_info = "Выход: Q-Й | Пауза: P-З | Меню: M-Ь"
 
-        color.addstr(0, 0, f"Счет: {score} | Время: {int(current_time - start_time)} сек.")
+    # Вычисляем доступную ширину
+        available_width = curses.COLS - 2  # -2 для учета боковых границ
 
-        color.addstr(0, curses.COLS - 5, "Выход: Q | Пауза: P")
-        
+    # Вычисляем ширину для каждой секции
+        control_width = len(control_info)
+        remaining_width = available_width - control_width
+        score_width = remaining_width // 2
+        time_width = remaining_width - score_width
+
+    # Форматируем строки
+        top_border = "╔" + "═" * available_width + "╗"
+        info_line = f"║ {control_info:<{control_width}}{score_info:^{score_width}}{time_info:>{time_width}} ║"
+        bottom_border = "╚" + "═" * available_width + "╝"
+
+    # Отображаем информационную панель
+        color.addstr(0, 0, top_border)
+        color.addstr(1, 0, info_line)
+        color.addstr(2, 0, bottom_border)
+
 # Движение змейки.
 
         for i, (y, x) in enumerate(snake):
@@ -536,23 +557,33 @@ def main(color):
 
         key = color.getch()
         if key != -1:
-
-            if key == ord('q'):
-                break
-
-            elif key == ord('p'):
-                paused = not paused
-
+            if key in [ord('q'), ord('й'), ord('P'), ord('З')]:
+                return 'exit'
+            elif key in [ord('m'), ord('ь'), ord('M'), ord('Ь')]:
+                return 'menu'
+            elif key in [ord('p'), ord('з'), ord('Q'), ord('Й')]:
+            
+                paused = True
+                
                 while paused:
-                    color.addstr(curses.LINES // 2, curses.COLS // 2 - 5, "Пауза. Нажмите P, чтобы продолжить.")
-
+                    color.addstr(curses.LINES // 2, curses.COLS // 2 - 15, "╔═══════════════════════╗")
+                    color.addstr(curses.LINES // 2 + 1, curses.COLS // 2 - 15, "║         ПАУЗА         ║")
+                    color.addstr(curses.LINES // 2 + 2, curses.COLS // 2 - 15, "╠═══════════════════════╣",)
+                    color.addstr(curses.LINES // 2 + 3, curses.COLS // 2 - 15,  "║  P/З - Продолжить     ║",)
+                    color.addstr(curses.LINES // 2 + 4, curses.COLS // 2 - 15, "║  M/Ь - Главное меню   ║",)
+                    color.addstr(curses.LINES // 2 + 5, curses.COLS // 2 - 15,"║  Q/Й - Выйти из игры  ║",)
+                    color.addstr(curses.LINES // 2 + 6, curses.COLS // 2 - 15,"╚═══════════════════════╝")
                     color.refresh()
 
-                    key = color.getch()
-
-                    if key == ord('p'):
+                    pause_key = color.getch()
+                    if pause_key in [ord('p'), ord('з'), ord('P'), ord('З')]:
                         paused = False
-                        break
+                    elif pause_key in [ord('m'), ord('ь'), ord('M'), ord('Ь')]:
+                        return 'menu'
+                    elif pause_key in [ord('q'), ord('й'), ord('Q'), ord('Й')]:
+                        return 'exit'
+
+
 
 
             elif key in [curses.KEY_UP, ord('w')] and direction != curses.KEY_DOWN:
@@ -577,6 +608,30 @@ def main(color):
                 direction = curses.KEY_LEFT
 
             elif key in [curses.KEY_RIGHT, ord('в')] and direction != curses.KEY_LEFT:
+                direction = curses.KEY_RIGHT
+            
+            elif key in [curses.KEY_UP, ord('W')] and direction != curses.KEY_DOWN:
+                direction = curses.KEY_UP
+
+            elif key in [curses.KEY_DOWN, ord('S')] and direction != curses.KEY_UP:
+                direction = curses.KEY_DOWN
+
+            elif key in [curses.KEY_LEFT, ord('A')] and direction != curses.KEY_RIGHT:
+                direction = curses.KEY_LEFT
+
+            elif key in [curses.KEY_RIGHT, ord('D')] and direction != curses.KEY_LEFT:
+                direction = curses.KEY_RIGHT
+            
+            elif key in [curses.KEY_UP, ord('Ц')] and direction != curses.KEY_DOWN:
+                direction = curses.KEY_UP
+
+            elif key in [curses.KEY_DOWN, ord('Ы')] and direction != curses.KEY_UP:
+                direction = curses.KEY_DOWN
+
+            elif key in [curses.KEY_LEFT, ord('Ф')] and direction != curses.KEY_RIGHT:
+                direction = curses.KEY_LEFT
+
+            elif key in [curses.KEY_RIGHT, ord('В')] and direction != curses.KEY_LEFT:
                 direction = curses.KEY_RIGHT
 
 
@@ -663,15 +718,46 @@ def main(color):
                     break
             else:
                 if snake[0] in snake[1:]:
+                    game_over_result = show_game_over_screen(color, score)
+                    if game_over_result == 'exit':
+                        return 'exit'
+                    elif game_over_result == 'restart':
+                        return 'play'
+                    elif game_over_result == 'menu':
+                        return 'menu'
+                else:
+                    snake.pop()
 
-                    color.addstr(curses.LINES // 2, curses.COLS // 2 - 10, "Игра окончена! Нажмите Q, чтобы выйти.")
-                    color.refresh()
+        color.refresh()
+def show_game_over_screen(color, score):
+    h, w = color.getmaxyx()
+    box_width = 33
+    box_height = 9
+    start_y = h // 2 - box_height // 2
+    start_x = w // 2 - box_width // 2
 
-                    while True:
-                        key = color.getch()
-                        if key == ord('q'):
-                            return
-                snake.pop()
+    # Рамка
+    color.addstr(start_y, start_x, "╔═══════════════════════════════╗")
+    color.addstr(start_y + 1, start_x, "║          GAME OVER            ║")
+    color.addstr(start_y + 2, start_x, "╠═══════════════════════════════╣")
+    color.addstr(start_y + 3, start_x, f"║  Ваш счет: {score:17d}  ║")
+    color.addstr(start_y + 4, start_x, "╠═══════════════════════════════╣")
+    color.addstr(start_y + 5, start_x, "║  R/К - Начать заново          ║")
+    color.addstr(start_y + 6, start_x, "║  M/Ь - Вернуться в меню       ║")
+    color.addstr(start_y + 7, start_x, "║  Q/Й - Выйти из игры          ║")
+    color.addstr(start_y + 8, start_x, "╚═══════════════════════════════╝")
+
+    color.refresh()
+
+    while True:
+        key = color.getch()
+        if key in [ord('q'), ord('й'), ord('Q'), ord('Й')]:
+            return 'exit'
+        elif key in [ord('r'), ord('к'), ord('R'), ord('К')]:
+            return 'restart'
+        elif key in [ord('m'), ord('ь'), ord('M'), ord('Ь')]:
+            return 'menu'
+
 
 if __name__ == '__main__':
     curses.wrapper(main)
