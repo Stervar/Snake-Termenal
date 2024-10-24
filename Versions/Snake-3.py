@@ -13,9 +13,9 @@ def main(stdscr):
     curses.init_pair(1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(2, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(3, curses.COLOR_BLUE, curses.COLOR_BLACK)
-    curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)  # For snake head
+    curses.init_pair(4, curses.COLOR_YELLOW, curses.COLOR_BLACK)  
 
-    # Initial parameters
+   
     direction = curses.KEY_RIGHT
     score = 0
     start_time = time.time()
@@ -217,10 +217,10 @@ def main(stdscr):
             head = snake[0]
             if direction == curses.KEY_UP:
                 new_head = [head[0] - 1, head[1]]
-                time.sleep(0.01)  # Add a small delay for vertical movement
+                time.sleep(0.01)  
             elif direction == curses.KEY_DOWN:
                 new_head = [head[0] + 1, head[1]]
-                time.sleep(0.01)  # Add a small delay for vertical movement
+                time.sleep(0.01) 
             elif direction == curses.KEY_LEFT:
                 new_head = [head[0], head[1] - 1]
             elif direction == curses.KEY_RIGHT:
@@ -248,7 +248,7 @@ def main(stdscr):
             elif snake[0] == big_apple:
                 score += 2
                 big_apple = create_apple(snake, box)
-                snake.insert(0, [snake[0][0], snake[0][1]])  # Add an extra segment
+                snake.insert(0, [snake[0][0], snake[0][1]])  
             else:
                 snake.pop()
 
