@@ -711,15 +711,6 @@ def play_game(color, difficulty, map_size, apple_count, apple_types):
                     apples.remove((apple, apple_type))
                     
                     # Респавн только съеденного яблока
-                    while True:
-                        new_apple = [
-                            random.randint(box[0][0] + 1, box[1][0] - 1),
-                            random.randint(box[0][1] + 1, box[1][1] - 1)
-                            ]
-                        if new_apple not in snake and new_apple not in [a[0] for a in apples]:
-                            apples[i] = (new_apple, apple_type)
-                            break
-        
 
                     # Проверка типа яблока
                     if apple_type == 'super':
@@ -757,8 +748,6 @@ def play_game(color, difficulty, map_size, apple_count, apple_types):
                     apples = create_apples(snake, box, apple_count, apple_types)
                     break
             else:
-                snake.pop()
-                
                 if snake[0] in snake[1:]:
                     game_over_result = show_game_over_screen(color, score)
                     if game_over_result == 'exit':
