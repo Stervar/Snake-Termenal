@@ -404,7 +404,7 @@ def set_apple_types(apple_types):
 ]
 
 # Возвращает список выбранных типов яблок.
-   
+
     for i, line in enumerate(options):
 
         apple_types.addstr(h // 2 - len(options) // 2 + i, max(0, w // 2 - len(line) // 2), line)
@@ -709,7 +709,17 @@ def play_game(color, difficulty, map_size, apple_count, apple_types):
                     elif apple_type == 'normal':
                         score += 1  
                     apples.remove((apple, apple_type))
-
+                    
+                    # Респавн только съеденного яблока
+                    while True:
+                        new_apple = [
+                            random.randint(box[0][0] + 1, box[1][0] - 1),
+                            random.randint(box[0][1] + 1, box[1][1] - 1)
+                            ]
+                        if new_apple not in snake and new_apple not in [a[0] for a in apples]:
+                            apples[i] = (new_apple, apple_type)
+                            break
+        
 
                     # Проверка типа яблока
                     if apple_type == 'super':
@@ -726,6 +736,8 @@ def play_game(color, difficulty, map_size, apple_count, apple_types):
                         for _ in range(0): #Добовляет один сегмент к змейки
                             new_head = snake[0]
                             snake.insert(0, new_head)
+                            
+                            
                             
 
 
@@ -745,6 +757,8 @@ def play_game(color, difficulty, map_size, apple_count, apple_types):
                     apples = create_apples(snake, box, apple_count, apple_types)
                     break
             else:
+                snake.pop()
+                
                 if snake[0] in snake[1:]:
                     game_over_result = show_game_over_screen(color, score)
                     if game_over_result == 'exit':
