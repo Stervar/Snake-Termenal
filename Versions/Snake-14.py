@@ -855,8 +855,38 @@ if __name__ == '__main__':
         
         
         # Отрисовка и удаление просроченных яблок
-# for apple in apples[:]:
-#     if not apple.is_alive():
-#         apples.remove(apple)
-#         continue
-#     color.addch(apple.x, apple.y, '*', apple.get_color())
+        
+        
+        
+    # for apple in apples[:]:
+    #     if not apple.is_alive():
+    #         apples.remove(apple)
+    #         continue
+    #     color.addch(apple.x, apple.y, '*', apple.get_color())
+
+
+
+
+
+
+
+        # Обработка съедения яблок:
+        
+        
+    #     for apple in apples[:]:
+    # if snake[0] == [apple.x, apple.y]:
+    #     score += apple.points
+        
+    #     # Увеличение длины змейки в зависимости от типа яблока
+    #     if apple.type == 'super':
+    #         for _ in range(2):
+    #             snake.insert(0, snake[0])
+    #     elif apple.type == 'big':
+    #         for _ in range(1):
+    #             snake.insert(0, snake[0])
+        
+    #     apples.remove(apple)
+        
+    #     # Создание новых яблок
+    #     apples.extend(create_apples(snake, box, apple_count - len(apples), apple_types))
+    #     break
