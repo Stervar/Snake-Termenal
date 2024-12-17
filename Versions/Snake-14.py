@@ -853,3 +853,10 @@ if __name__ == '__main__':
         # Отрисовка яблок:
         
         
+        
+        # Отрисовка и удаление просроченных яблок
+# for apple in apples[:]:
+#     if not apple.is_alive():
+#         apples.remove(apple)
+#         continue
+#     color.addch(apple.x, apple.y, '*', apple.get_color())
