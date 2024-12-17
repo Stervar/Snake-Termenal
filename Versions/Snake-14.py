@@ -301,7 +301,7 @@ def show_menu(home_screensaver):
         x = max(0, w // 2 - len(line) // 2)
 
         if y >= 0 and y < h and x >= 0 and x < w:
-            stdscr.addstr(y, x, line)
+            home_screensaver.addstr(y, x, line)
 
     subtitle = "Игра про змейку которая была улучшина 'Sterva'"
 
@@ -309,7 +309,7 @@ def show_menu(home_screensaver):
     x = max(0, w // 2 - len(subtitle) // 2)
 
     if y >= 0 and y < h and x >= 0 and x < w:
-        stdscr.addstr(y, x, subtitle)
+        home_screensaver.addstr(y, x, subtitle)
 
     # Отображает главное меню с 6 пунктами.
 
