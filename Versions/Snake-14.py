@@ -331,7 +331,7 @@ def show_menu(home_screensaver):
         x = max(0, w // 2 - len(line) // 2)
 
         if y >= 0 and y < h and x >= 0 and x < w:
-            stdscr.addstr(y, x, line)
+            home_screensaver.addstr(y, x, line)
 
     # Показывает информационный блок с правилами игры.
 
@@ -358,14 +358,14 @@ def show_menu(home_screensaver):
 
         if y >= 0 and y < h and x >= 0 and x < w:
 
-            stdscr.addstr(y, x, line)
+            home_screensaver.addstr(y, x, line)
             
 
-    stdscr.refresh()
+    home_screensaver.refresh()
     
 
     while True:
-        key = stdscr.getch ()
+        key = home_screensaver.getch ()
 
         if key == ord('1'):
             return 'play'
@@ -384,16 +384,16 @@ def show_menu(home_screensaver):
         
         elif key == ord('6'):
             return 'exit'
-   
-   
-   
-   
-   
-   
-   
-   
-   
-        
+
+
+
+
+
+
+
+
+
+
 # Отображает меню выбора сложности.
 
 def set_difficulty(complexity):
