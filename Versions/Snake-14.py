@@ -113,40 +113,6 @@ def create_apples(snake, box, apple_count, apple_types):
 
 
 
-
-
-
-
-def get_screen_dimensions(stdscr):
-    """
-    Получает текущие размеры экрана с учетом возможных изменений
-    """
-    h, w = stdscr.getmaxyx()
-    return h, w
-
-def center_text(text, width, align='center'):
-    """
-    Центрирование текста по горизонтали
-    """
-    if align == 'center':
-        return (width - len(text)) // 2
-    elif align == 'right':
-        return width - len(text) - 1
-    else:
-        return 0
-
-def adaptive_box_size(h, w):
-    """
-    Динамическое определение размера игрового поля
-    """
-    # Зависимость от размера экрана
-    if h < 30 or w < 80:
-        return [[2, 2], [20, 40]]  # Маленькое поле
-    elif h < 50 or w < 120:
-        return [[2, 2], [25, 50]]  # Среднее поле
-    else:
-        return [[2, 2], [35, 80]]  # Большое поле
-    
     
     
     
@@ -283,6 +249,9 @@ def show_menu(home_screensaver):
         home_screensaver.getch()
 
         sys.exit()
+
+
+
 
 # Название игры
     title = [
