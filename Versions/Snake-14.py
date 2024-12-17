@@ -278,9 +278,9 @@ def show_menu(home_screensaver):
 
         home_screensaver.addstr(0, 0, "Пожалуйста, измените размер окна терминала.")
 
-        show_menu.refresh()
+        home_screensaver.refresh()
 
-        show_menu.getch()
+        home_screensaver.getch()
 
         sys.exit()
 
