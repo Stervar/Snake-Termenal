@@ -111,6 +111,50 @@ def create_apples(snake, box, apple_count, apple_types):
 
     return apples
 
+
+
+
+
+
+
+def get_screen_dimensions(stdscr):
+    """
+    Получает текущие размеры экрана с учетом возможных изменений
+    """
+    h, w = stdscr.getmaxyx()
+    return h, w
+
+def center_text(text, width, align='center'):
+    """
+    Центрирование текста по горизонтали
+    """
+    if align == 'center':
+        return (width - len(text)) // 2
+    elif align == 'right':
+        return width - len(text) - 1
+    else:
+        return 0
+
+def adaptive_box_size(h, w):
+    """
+    Динамическое определение размера игрового поля
+    """
+    # Зависимость от размера экрана
+    if h < 30 or w < 80:
+        return [[2, 2], [20, 40]]  # Маленькое поле
+    elif h < 50 or w < 120:
+        return [[2, 2], [25, 50]]  # Среднее поле
+    else:
+        return [[2, 2], [35, 80]]  # Большое поле
+    
+    
+    
+    
+    
+    
+    
+    
+    
 def animation_loading(animation):
 
 # loading_text: ASCII-арт логотип игры, представленный списком строк.
@@ -222,21 +266,21 @@ def animation_loading(animation):
         animation.refresh()
 
 # Основное меню
-def show_menu(stdscr): 
+def show_menu(home_screensaver): 
 
-    stdscr.clear()
+    home_screensaver.clear()
 
-    h, w = stdscr.getmaxyx()
+    h, w = show_menu.getmaxyx()
 
 # Проверяет размер окна терминала: if h < 20 or w < 60.
 
     if h < 20 or w < 60:
 
-        stdscr.addstr(0, 0, "Пожалуйста, измените размер окна терминала.")
+        show_menu.addstr(0, 0, "Пожалуйста, измените размер окна терминала.")
 
-        stdscr.refresh()
+        show_menu.refresh()
 
-        stdscr.getch()
+        show_menu.getch()
 
         sys.exit()
 
@@ -340,6 +384,15 @@ def show_menu(stdscr):
         
         elif key == ord('6'):
             return 'exit'
+   
+   
+   
+   
+   
+   
+   
+   
+   
         
 # Отображает меню выбора сложности.
 
@@ -365,6 +418,14 @@ def set_difficulty(complexity):
     complexity.refresh()
 
 
+
+
+
+
+
+
+
+
     while True:
 
 # Использует stdscr.getch() для получения выбора пользователя.
@@ -380,6 +441,15 @@ def set_difficulty(complexity):
         
         elif key == ord('3'):
             return 2
+
+
+
+
+
+
+
+
+
 
 # Отображает меню выбора размера карты.
 
@@ -403,6 +473,13 @@ def set_map_size(map):
 
     map.refresh()
 
+
+
+
+
+
+
+
 # Возвращает строку с выбранным размером ('small', 'medium', 'large').
 
     while True:
@@ -418,8 +495,17 @@ def set_map_size(map):
         elif key == ord('3'):
             return 'large'
 
-# Запрашивает у пользователя количество яблок.
 
+
+
+
+
+
+
+
+
+
+# Запрашивает у пользователя количество яблок.
 def set_apple_count(apple_quantity):
     apple_quantity.clear()
     h, w = apple_quantity.getmaxyx()
@@ -442,8 +528,15 @@ def set_apple_count(apple_quantity):
     
     apple_quantity.refresh()
     curses.curs_set(1)  # Показываем курсор
-    
     count = ""
+    
+    
+    
+    
+    
+    
+    
+    
     while True:
         apple_quantity.addstr(input_y, input_x - 5, " " * 10)  # Очищаем строку ввода
         apple_quantity.addstr(input_y, input_x - 5, count)  # Показываем текущий ввод
@@ -475,6 +568,12 @@ def set_apple_count(apple_quantity):
             count = count[:-1]
 
     
+    
+    
+    
+    
+    
+    
 # Отображает меню выбора типов яблок.
 
 def set_apple_types(apple_types):
@@ -490,6 +589,11 @@ def set_apple_types(apple_types):
     "║ • 3. Все типы (включая супер) ║",
     "╚═══════════════════════════════╝"
 ]
+
+
+
+
+
 
 # Возвращает список выбранных типов яблок.
 
@@ -513,11 +617,11 @@ def set_apple_types(apple_types):
         elif key == ord('3'):
             return ['normal', 'big', 'super']
 
+
+
+
+
 # Генерирует список яблок заданного количества.
-
-
-
-
 def main(color):
 
     animation_loading(color)
@@ -548,6 +652,14 @@ def main(color):
 
     apple_types = ['normal', 'big']
 
+
+
+
+
+
+
+
+
     while True:
         menu_choice = show_menu(color)
         if menu_choice == 'play':
@@ -564,6 +676,14 @@ def main(color):
             apple_types = set_apple_types(color)
         elif menu_choice == 'exit':
             return
+        
+        
+        
+        
+        
+        
+        
+        
         
 def play_game(color, difficulty, map_size, apple_count, apple_types):
     
