@@ -270,7 +270,7 @@ def show_menu(home_screensaver):
 
     home_screensaver.clear()
 
-    h, w = show_menu.getmaxyx()
+    h, w =  home_screensaver.getmaxyx()
 
 # Проверяет размер окна терминала: if h < 20 or w < 60.
 
