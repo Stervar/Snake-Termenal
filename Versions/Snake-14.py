@@ -276,7 +276,7 @@ def show_menu(home_screensaver):
 
     if h < 20 or w < 60:
 
-        show_menu.addstr(0, 0, "Пожалуйста, измените размер окна терминала.")
+        home_screensaver.addstr(0, 0, "Пожалуйста, измените размер окна терминала.")
 
         show_menu.refresh()
 
