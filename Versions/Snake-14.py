@@ -29,6 +29,9 @@ class Apple:
         self.points = 1
         self.lifetime = 15  # Время жизни яблока в секундах
         self.spawn_time = time.time()
+        self.blink_state = True  # Состояние мигания
+        self.last_blink_time = time.time()
+        self.blink_interval = 0.5  # Интервал мигания в секундах
 
     def is_alive(self):
         return time.time() - self.spawn_time <= self.lifetime
@@ -36,11 +39,24 @@ class Apple:
     def get_color(self):
         return curses.color_pair(2)  # Базовый цвет
 
+    def update_blink(self):
+        # Обновление состояния мигания
+        current_time = time.time()
+        if current_time - self.last_blink_time >= self.blink_interval:
+            self.blink_state = not self.blink_state
+            self.last_blink_time = current_time
+
+    def should_render(self):
+        # Определяет, нужно ли рисовать яблоко
+        return self.is_alive() and self.blink_state
+
+# Остальные классы яблок остаются без изменений
 class NormalApple(Apple):
     def __init__(self, x, y):
         super().__init__(x, y)
         self.type = 'normal'
         self.points = 1
+        self.blink_interval = 0.7  # Немного другой интервал мигания
 
 class BigApple(Apple):
     def __init__(self, x, y):
@@ -48,6 +64,7 @@ class BigApple(Apple):
         self.type = 'big'
         self.points = 2
         self.get_color = lambda: curses.color_pair(3)
+        self.blink_interval = 0.5
 
 class SuperApple(Apple):
     def __init__(self, x, y):
@@ -56,8 +73,43 @@ class SuperApple(Apple):
         self.points = 3
         self.lifetime = 10  # Меньшее время жизни
         self.get_color = lambda: curses.color_pair(4)
+        self.blink_interval = 0.3
 
+def create_apples(snake, box, apple_count, apple_types):
+    apples = []
+    apple_classes = {
+        'normal': NormalApple,
+        'big': BigApple,
+        'super': SuperApple
+    }
 
+    max_attempts = 100  # Максимальное количество попыток создания яблока
+    
+    for _ in range(apple_count):
+        attempts = 0
+        while attempts < max_attempts:
+            apple_x = random.randint(box[0][0] + 1, box[1][0] - 1)
+            apple_y = random.randint(box[0][1] + 1, box[1][1] - 1)
+            
+            apple_type = random.choice(apple_types)
+            
+            if apple_type in apple_classes:
+                apple = apple_classes[apple_type](apple_x, apple_y)
+            
+            # Проверка уникальности позиции с учетом координат змейки и существующих яблок
+            if (apple and 
+                [apple.x, apple.y] not in snake and 
+                all(apple.x != existing_apple.x or apple.y != existing_apple.y for existing_apple in apples)):
+                apples.append(apple)
+                break
+            
+            attempts += 1
+        
+        # Если не удалось создать яблоко, пропускаем его
+        if attempts == max_attempts:
+            print(f"Не удалось создать яблоко типа {apple_type}")
+
+    return apples
 
 def animation_loading(animation):
 
@@ -463,30 +515,7 @@ def set_apple_types(apple_types):
 
 # Генерирует список яблок заданного количества.
 
-def create_apples(snake, box, apple_count, apple_types):
-    apples = []
-    apple_classes = {
-        'normal': NormalApple,
-        'big': BigApple,
-        'super': SuperApple
-    }
 
-    for _ in range(apple_count):
-        while True:
-            apple_x = random.randint(box[0][0] + 1, box[1][0] - 1)
-            apple_y = random.randint(box[0][1] + 1, box[1][1] - 1)
-            
-            apple = None
-            apple_type = random.choice(apple_types)
-            
-            if apple_type in apple_classes:
-                apple = apple_classes[apple_type](apple_x, apple_y)
-            
-            if apple and [apple.x, apple.y] not in snake and apple not in apples:
-                apples.append(apple)
-                break
-
-    return apples
 
 
 def main(color):
@@ -566,6 +595,26 @@ def play_game(color, difficulty, map_size, apple_count, apple_types):
 
         color.clear()
         textpad.rectangle(color, box[0][0], box[0][1], box[1][0], box[1][1])
+        
+        # Обновление состояния мигания для всех яблок
+        for apple in apples:
+            apple.update_blink()
+
+        # Отрисовка и удаление просроченных яблок
+        for apple in apples[:]:
+            if not apple.is_alive():
+                apples.remove(apple)
+                
+                # Автоматическое создание нового яблока того же типа
+                new_apples = create_apples(snake, box, 1, [apple.type])
+                if new_apples:
+                    apples.extend(new_apples)
+                continue
+
+            # Рисуем яблоко только если оно должно быть видимо
+            if apple.should_render():
+                color.addch(apple.x, apple.y, '*', apple.get_color())
+
         
         # Создаем информационную строку
         score_info = f"Счет: {score}"
@@ -903,3 +952,12 @@ if __name__ == '__main__':
                     # Разные типы яблок дают разное количество очков
                     # Супер яблоки дают больше сегментов и очков
                     # Более динамичная и интересная механика
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
