@@ -118,7 +118,7 @@ class LuckyBlock:
         # Рисуем рамку
         color.addstr(start_y, start_x, "╔" + "═" * (box_width - 2) + "╗", curses.color_pair(color_pair))
         color.addstr(start_y + 1, start_x, "║ " + " " * (box_width - 4) + " ║", curses.color_pair(color_pair))
-        color.addstr(start_y + 2, start_x, f"║  {message}  ║", curses.color_pair(color_pair))
+        color.addstr(start_y + 2, start_x,f"║  {message}  ║", curses.color_pair(color_pair))
         color.addstr(start_y + 3, start_x, "║ " + " " * (box_width - 4) + " ║", curses.color_pair(color_pair))
         color.addstr(start_y + 4, start_x, "╚" + "═" * (box_width - 2) + "╝", curses.color_pair(color_pair))
     
@@ -1164,3 +1164,4 @@ if __name__ == '__main__':
 
     # Обработка столкновений: Я убедился, что логика обработки столкновений с Lucky Blocks 
     # и яблоками была правильно реализована, чтобы избежать ошибок при взаимодействии с ними.
+    
