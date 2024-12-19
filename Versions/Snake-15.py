@@ -25,14 +25,34 @@ class LuckyBlock:
         self.y = y
         self.spawn_time = time.time()
         self.lifetime = random.randint(30, 60)  # Время жизни от 30 до 60 секунд
-        self.type = random.choice([
+        self.type = random.choices([
             'extra_life', 
             'pass_through', 
             'bomb', 
             'portal', 
             'snake_length', 
-            'score_multiplier'
-        ])
+            'score_multiplier',
+            'speed_boost',      
+            'slow_down',         
+            'ghost_mode',        
+            'reverse_controls', 
+            'teleport',          
+            'shield'             
+        ], weights=[
+            15,  # extra_life
+            12,  # pass_through
+            10,  # bomb
+            8,   # portal
+            10,  # snake_length
+            12,  # score_multiplier
+            7,   # speed_boost
+            7,   # slow_down
+            6,   # ghost_mode
+            5,   # reverse_controls
+            5,   # teleport
+            8    # shield
+        ])[0]  # Взять первый элемент из результата
+        
         self.blink_state = True
         self.last_blink_time = time.time()
         self.blink_interval = 0.5
@@ -51,28 +71,43 @@ class LuckyBlock:
 
     def get_color(self):
         color_map = {
-            'extra_life': curses.color_pair(3),        # Синий
-            'pass_through': curses.color_pair(4),      # Желтый
+            'extra_life': curses.color_pair(8),        # Зеленый
+            'pass_through': curses.color_pair(9),      # Голубой
             'bomb': curses.color_pair(2),              # Красный
-            'portal': curses.color_pair(5),            # Новый цвет (магента)
-            'snake_length': curses.color_pair(6),      # Новый цвет (циан)
-            'score_multiplier': curses.color_pair(7)   # Новый цвет (белый)
+            'portal': curses.color_pair(10),           # Пурпурный
+            'snake_length': curses.color_pair(11),     # Насыщенный синий
+            'score_multiplier': curses.color_pair(12), # Оранжевый
+            'speed_boost': curses.color_pair(13),      # Морская волна
+            'slow_down': curses.color_pair(14),        # Розовый
+            'ghost_mode': curses.color_pair(15),       # Яркий белый
+            'reverse_controls': curses.color_pair(9),  # Голубой
+            'teleport': curses.color_pair(10),         # Пурпурный
+            'shield': curses.color_pair(11)            # Насыщенный синий
         }
         return color_map.get(self.type, curses.color_pair(1))
     
     def show_lucky_block_message(self, color):
         h, w = color.getmaxyx()
     
-        messages = {
-            'extra_life': "Вы получили дополнительную жизнь!",
-            'pass_through': "Временная неуязвимость активирована!",
-            'bomb': "Бомба! Длина змейки уменьшена",
-            'portal': "Телепортация!",
-            'snake_length': "Изменение длины змейки",
-            'score_multiplier': "Удвоение очков!"
+        messages_colors = {
+            'extra_life': (8, "Дополнительная жизнь! Вторая попытка"),
+            'pass_through': (9, "Временная неуязвимость на 15 сек!"),
+            'bomb': (2, "Бомба! Змейка уменьшена наполовину"),
+            'portal': (10, "Телепортация в случайную точку!"),
+            'snake_length': (11, "Длина змейки изменена случайно"),
+            'score_multiplier': (12, "Очки будут умножены х2!"),
+            'speed_boost': (13, "Турбо-режим! Ускорение змейки"),
+            'slow_down': (14, "Осторожно! Змейка замедлена"),
+            'ghost_mode': (15, "Режим призрака - проход сквозь стены"),
+            'reverse_controls': (9, "Внимание! Инверсия управления"),
+            'teleport': (10, "Мгновенная телепортация!"),
+            'shield': (11, "Защитное поле активировано!")
         }
     
-        message = messages.get(self.type, "Неизвестный Lucky Block")
+        color_pair, message = messages_colors.get(
+            self.type, 
+            (1, "Неизвестный Lucky Block")
+        )
     
         # Создаем рамку для сообщения
         box_width = len(message) + 4
@@ -81,11 +116,11 @@ class LuckyBlock:
         start_x = w // 2 - box_width // 2
     
         # Рисуем рамку
-        color.addstr(start_y, start_x, "╔" + "═" * (box_width - 2) + "╗")
-        color.addstr(start_y + 1, start_x, "║ " + " " * (box_width - 4) + " ║")
-        color.addstr(start_y + 2, start_x, f"║  {message}  ║")
-        color.addstr(start_y + 3, start_x, "║ " + " " * (box_width - 4) + " ║")
-        color.addstr(start_y + 4, start_x, "╚" + "═" * (box_width - 2) + "╝")
+        color.addstr(start_y, start_x, "╔" + "═" * (box_width - 2) + "╗", curses.color_pair(color_pair))
+        color.addstr(start_y + 1, start_x, "║ " + " " * (box_width - 4) + " ║", curses.color_pair(color_pair))
+        color.addstr(start_y + 2, start_x, f"║  {message}  ║", curses.color_pair(color_pair))
+        color.addstr(start_y + 3, start_x, "║ " + " " * (box_width - 4) + " ║", curses.color_pair(color_pair))
+        color.addstr(start_y + 4, start_x, "╚" + "═" * (box_width - 2) + "╝", curses.color_pair(color_pair))
     
         color.refresh()
     
@@ -94,11 +129,12 @@ class LuckyBlock:
         color.getch()
         color.timeout(50)  # Возвращаем стандартный таймаут
         
-    def create_lucky_blocks(snake, box):
+    @classmethod
+    def create_lucky_blocks(cls, snake, box):
         lucky_blocks = []
 
         # Генерируем лаки-блок с определенной вероятностью
-        if random.random() < 0.9:  # 30% шанс появления
+        if random.random() < 1:  # 60% шанс появления
             attempts = 0
             max_attempts = 100
 
@@ -108,7 +144,7 @@ class LuckyBlock:
     
                 # Проверяем, что блок не накладывается на змейку
                 if [lucky_x, lucky_y] not in snake:
-                    lucky_block = LuckyBlock(lucky_x, lucky_y)
+                    lucky_block = cls(lucky_x, lucky_y)
                     lucky_blocks.append(lucky_block)
                     break
     
@@ -771,6 +807,22 @@ def main(color):
     curses.init_pair(6, curses.COLOR_CYAN, curses.COLOR_BLACK)
 
     curses.init_pair(7, curses.COLOR_WHITE, curses.COLOR_BLACK)
+    
+    curses.init_pair(8, curses.COLOR_GREEN, curses.COLOR_BLACK)     # Зеленый
+    
+    curses.init_pair(9, curses.COLOR_CYAN, curses.COLOR_BLACK)      # Голубой
+    
+    curses.init_pair(10, curses.COLOR_MAGENTA, curses.COLOR_BLACK)  # Пурпурный
+    
+    curses.init_pair(11, curses.COLOR_BLUE, curses.COLOR_BLACK)     # Насыщенный синий
+    
+    curses.init_pair(12, curses.COLOR_YELLOW, curses.COLOR_BLACK)   # Оранжевый
+    
+    curses.init_pair(13, curses.COLOR_CYAN, curses.COLOR_BLACK)     # Морская волна
+    
+    curses.init_pair(14, curses.COLOR_MAGENTA, curses.COLOR_BLACK)  # Розовый
+    
+    curses.init_pair(15, curses.COLOR_WHITE, curses.COLOR_BLACK)    # Яркий белый
 
 # Инициализирует параметры игры (сложность, размер карты и т.д.).
 
