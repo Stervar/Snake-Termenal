@@ -60,12 +60,45 @@ class LuckyBlock:
         }
         return color_map.get(self.type, curses.color_pair(1))
     
+    def show_lucky_block_message(self, color):
+        h, w = color.getmaxyx()
     
+        messages = {
+            'extra_life': "Вы получили дополнительную жизнь!",
+            'pass_through': "Временная неуязвимость активирована!",
+            'bomb': "Бомба! Длина змейки уменьшена",
+            'portal': "Телепортация!",
+            'snake_length': "Изменение длины змейки",
+            'score_multiplier': "Удвоение очков!"
+        }
+    
+        message = messages.get(self.type, "Неизвестный Lucky Block")
+    
+        # Создаем рамку для сообщения
+        box_width = len(message) + 4
+        box_height = 5
+        start_y = h // 2 - box_height // 2
+        start_x = w // 2 - box_width // 2
+    
+        # Рисуем рамку
+        color.addstr(start_y, start_x, "╔" + "═" * (box_width - 2) + "╗")
+        color.addstr(start_y + 1, start_x, "║ " + " " * (box_width - 4) + " ║")
+        color.addstr(start_y + 2, start_x, f"║  {message}  ║")
+        color.addstr(start_y + 3, start_x, "║ " + " " * (box_width - 4) + " ║")
+        color.addstr(start_y + 4, start_x, "╚" + "═" * (box_width - 2) + "╝")
+    
+        color.refresh()
+    
+        # Задержка для отображения сообщения
+        color.timeout(1500)  # 1.5 секунды
+        color.getch()
+        color.timeout(50)  # Возвращаем стандартный таймаут
+        
     def create_lucky_blocks(snake, box):
         lucky_blocks = []
 
         # Генерируем лаки-блок с определенной вероятностью
-        if random.random() < 0.3:  # 30% шанс появления
+        if random.random() < 0.9:  # 30% шанс появления
             attempts = 0
             max_attempts = 100
 
@@ -963,6 +996,8 @@ def play_game(color, difficulty, map_size, apple_count, apple_types, lucky_block
             
             for lucky_block in lucky_blocks[:]:
                 if snake[0] == [lucky_block.x, lucky_block.y]:
+                    lucky_block.show_lucky_block_message(color)
+        
                     if lucky_block.type == 'extra_life':
                         extra_life = True
                     elif lucky_block.type == 'pass_through':
