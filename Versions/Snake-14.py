@@ -732,7 +732,7 @@ def play_game(color, difficulty, map_size, apple_count, apple_types):
         # Движение змейки.
         for i, (y, x) in enumerate(snake):
             if i == 0:
-                color.addch(y, x, '۝', curses.color_pair(4))  # Голова змейки
+                color.addch(y, x, '5', curses.color_pair(4))  # Голова змейки
             else:
                 color.addch(y, x, 'o', curses.color_pair(1))  # Тело змейки
 
